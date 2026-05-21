@@ -1,0 +1,141 @@
+<div class="flex flex-col lg:flex-row min-h-screen bg-white dark:bg-gray-900 font-sans">
+  <div class="w-full lg:w-1/2 flex flex-col p-6 md:p-12 lg:p-20 relative">
+    <div class="flex items-center flex-shrink-0">
+      <a href="#" class="flex items-center h-[80px] cursor-pointer gap-2">
+        <div class="flex flex-col leading-none">
+          <span style="font-family:system-ui,sans-serif; font-size:22px; font-weight:800; color:#4A3ADF; letter-spacing:-0.5px;">
+            Kno<span style="color:#F97316;">via</span>
+          </span>
+        </div>
+      </a>
+    </div>
+
+    <div class="flex-grow flex flex-col justify-start items-center lg:items-start pt-10">
+      <div class="max-w-md w-full">
+        <div class="mb-10 text-start">
+          <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-6">Sign Up</h2>
+          <p class="text-gray-500 dark:text-gray-400 text-lg">
+            If you already have an account <br class="hidden sm:block">
+            You can <a class="text-[#4A3ADF] font-bold cursor-pointer hover:underline" routerLink="/auth/login">Login Here!</a>
+          </p>
+        </div>
+
+        @if (errMsg()) {
+          <div class="p-4 mb-6 text-sm text-red-800 dark:text-red-400 rounded-2xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 flex items-center animate-fade-in">
+            <svg class="w-5 h-5 me-2" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+            </svg>
+            {{ errMsg() }}
+          </div>
+        }
+
+        <form [formGroup]="registerForm" (ngSubmit)="register()" class="space-y-10">
+
+          <!-- First Name -->
+          <div class="relative z-0 w-full group">
+            <input type="text" formControlName="firstName" id="firstName"
+              class="block py-3 px-0 w-full text-sm text-gray-900 dark:text-white bg-transparent border-0 border-b-2 border-gray-300 dark:border-gray-600 appearance-none focus:outline-none focus:ring-0 focus:border-[#4A3ADF] peer"
+              placeholder=" " />
+            <label for="firstName" class="peer-focus:font-medium absolute text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-8 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-[#4A3ADF] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8 flex items-center">
+              <svg class="w-5 h-5 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              Enter Your First Name
+            </label>
+            @if (registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid) {
+              <span class="text-[11px] text-red-500 absolute -bottom-6">First name is required (3-10 characters)</span>
+            }
+          </div>
+
+          <!-- Last Name -->
+          <div class="relative z-0 w-full group">
+            <input type="text" formControlName="lastName" id="lastName"
+              class="block py-3 px-0 w-full text-sm text-gray-900 dark:text-white bg-transparent border-0 border-b-2 border-gray-300 dark:border-gray-600 appearance-none focus:outline-none focus:ring-0 focus:border-[#4A3ADF] peer"
+              placeholder=" " />
+            <label for="lastName" class="peer-focus:font-medium absolute text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-8 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-[#4A3ADF] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8 flex items-center">
+              <svg class="w-5 h-5 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              Enter Your Last Name
+            </label>
+            @if (registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid) {
+              <span class="text-[11px] text-red-500 absolute -bottom-6">Last name is required (3-10 characters)</span>
+            }
+          </div>
+
+          <!-- Email -->
+          <div class="relative z-0 w-full group">
+            <input type="email" formControlName="email" id="email"
+              class="block py-3 px-0 w-full text-sm text-gray-900 dark:text-white bg-transparent border-0 border-b-2 border-gray-300 dark:border-gray-600 appearance-none focus:outline-none focus:ring-0 focus:border-[#4A3ADF] peer"
+              placeholder=" " />
+            <label for="email" class="peer-focus:font-medium absolute text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-8 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-[#4A3ADF] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8 flex items-center">
+              <svg class="w-5 h-5 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m3.5 5.5 7.893 6.036a1 1 0 0 0 1.214 0L20.5 5.5M4 19h16a1 1 0 0 0-1-1V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z"/></svg>
+              Enter Your Email Address
+            </label>
+            @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
+              <span class="text-[11px] text-red-500 absolute -bottom-6">Please enter a valid email address</span>
+            }
+          </div>
+
+          <!-- Password -->
+          <div class="relative z-0 w-full group">
+            <input type="password" formControlName="password" id="password"
+              class="block py-3 px-0 w-full text-sm text-gray-900 dark:text-white bg-transparent border-0 border-b-2 border-gray-300 dark:border-gray-600 appearance-none focus:outline-none focus:ring-0 focus:border-[#4A3ADF] peer"
+              placeholder=" " />
+            <label for="password" class="peer-focus:font-medium absolute text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-8 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-[#4A3ADF] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8 flex items-center">
+              <svg class="w-5 h-5 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2zm10-10V7a4 4 0 0 0-8 0v4h8z"/></svg>
+              Enter Your Password
+            </label>
+            @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
+              <span class="text-[11px] text-red-500 absolute -bottom-6">Password must be at least 6 characters</span>
+            }
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="relative z-0 w-full group">
+            <input type="password" formControlName="confirmPassword" id="confirmPassword"
+              class="block py-3 px-0 w-full text-sm text-gray-900 dark:text-white bg-transparent border-0 border-b-2 border-gray-300 dark:border-gray-600 appearance-none focus:outline-none focus:ring-0 focus:border-[#4A3ADF] peer"
+              placeholder=" " />
+            <label for="confirmPassword" class="peer-focus:font-medium absolute text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-8 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-[#4A3ADF] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8 flex items-center">
+              <svg class="w-5 h-5 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              Confirm Your Password
+            </label>
+            @if (registerForm.get('confirmPassword')?.touched && registerForm.hasError('mismatch')) {
+              <span class="text-[11px] text-red-500 absolute -bottom-6">Passwords do not match</span>
+            }
+          </div>
+
+          <!-- Role -->
+          <div class="relative z-0 w-full group">
+            <label class="text-xs text-gray-400 dark:text-gray-500 block mb-1">Select Role</label>
+            <select formControlName="role"
+              class="block py-3 px-0 w-full text-sm text-gray-600 dark:text-gray-300 bg-transparent border-0 border-b-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-0 focus:border-[#4A3ADF] appearance-none cursor-pointer">
+              <option value="Student" class="dark:bg-gray-800">Student</option>
+              <option value="Instructor" class="dark:bg-gray-800">Instructor</option>
+            </select>
+            @if (registerForm.get('role')?.touched && registerForm.get('role')?.invalid) {
+              <span class="text-[11px] text-red-500 absolute -bottom-6">Please select a role</span>
+            }
+          </div>
+
+          <button type="submit" [disabled]="registerForm.invalid || loader()"
+            class="w-full cursor-pointer text-white bg-[#0C21C1] hover:bg-[#392cb3] disabled:bg-gray-400 dark:disabled:bg-gray-600 disabled:cursor-not-allowed font-medium rounded-full text-lg px-5 py-4 text-center transition-all duration-300 active:scale-95 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30">
+            @if (loader()) {
+              <div class="flex items-center justify-center">
+                <div class="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin me-3"></div>
+              </div>
+            } @else {
+              Register
+            }
+          </button>
+        </form>
+
+        <p class="text-center text-gray-400 dark:text-gray-500 my-6">or continue with</p>
+        <div #googleBtn class="w-full flex justify-center"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hidden lg:block lg:w-1/2 relative p-6">
+    <div class="w-full h-full relative overflow-hidden rounded-[40px] shadow-2xl">
+      <img src="images/added loginandregister.jpeg" alt="Auth Background" class="absolute inset-0 w-full h-full object-cover">
+      <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+    </div>
+  </div>
+</div>

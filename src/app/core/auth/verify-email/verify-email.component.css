@@ -1,0 +1,72 @@
+/* تأكد إن المتغيرات دي متعرفة في أول الملف عشان الألوان تشتغل */
+:root {
+  --main-color: #1a1a1a; /* لون الزرار */
+  --main-color-rgb: 26, 26, 26;
+}
+
+/* الكود اللي بيخلي الـ Inputs شكلها شيك */
+.form-input-custom {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background-color: #f9fafb; /* bg-gray-50 */
+  border: 1px solid #f3f4f6; /* border-gray-100 */
+  border-radius: 1rem; /* rounded-2xl */
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.form-input-custom:focus {
+  background-color: #fff;
+  border-color: var(--main-color);
+  box-shadow: 0 0 0 4px rgba(var(--main-color-rgb), 0.1);
+}
+
+/* زرار Confirm Reset / Verify */
+.btn-main {
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--main-color);
+  color: white;
+  font-weight: 700;
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-main:hover:not(:disabled) {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
+.btn-main:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* أنيميشن ظهور رسائل الخطأ */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* الـ Loader بتاع الزرار */
+.loader {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #FFF;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

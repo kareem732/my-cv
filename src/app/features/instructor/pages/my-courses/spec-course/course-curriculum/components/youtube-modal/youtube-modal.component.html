@@ -1,0 +1,32 @@
+@if (lesson) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4"
+       (click)="close.emit()">
+    <div class="w-full max-w-3xl flex flex-col gap-3"
+         (click)="$event.stopPropagation()">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between">
+        <p class="text-white text-sm font-medium truncate pr-4">{{ lesson.title }}</p>
+        <button (click)="close.emit()"
+          class="w-8 h-8 flex items-center justify-center rounded-full bg-white/20
+                 hover:bg-white/30 text-white transition shrink-0 cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- iframe -->
+      <div class="w-full aspect-video rounded-xl overflow-hidden shadow-2xl bg-black">
+        <iframe
+          [src]="embedUrl"
+          class="w-full h-full"
+          frameborder="0"
+          allowfullscreen
+          allow="autoplay; encrypted-media">
+        </iframe>
+      </div>
+
+    </div>
+  </div>
+}

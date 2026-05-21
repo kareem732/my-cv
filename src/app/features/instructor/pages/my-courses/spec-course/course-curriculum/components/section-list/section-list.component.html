@@ -1,0 +1,75 @@
+<div class="space-y-6">
+
+  @for (section of curriculum.sections; track section.id; let i = $index) {
+    <app-section-item
+      [section]="section"
+      [index]="i"
+      [isExpanded]="expandedSections.has(section.id)"
+      [isEditingSection]="editingSectionId === section.id"
+      [editingTitle]="editingSectionTitle"
+      [isSavingSection]="isSavingSection"
+      [draggedSectionIndex]="draggedSectionIndex"
+      [dragOverSectionIndex]="dragOverSectionIndex"
+      [editingLessonId]="editingLessonId"
+      [addingLessonToSectionId]="addingLessonToSectionId"
+      [isSavingLesson]="isSavingLesson"
+      [lessonEditInitialData]="lessonEditInitialData"
+      [draggedLessonIndex]="draggedLessonIndex"
+      [draggedLessonSectionId]="draggedLessonSectionId"
+      [dragOverLessonIndex]="dragOverLessonIndex"
+      (toggle)="toggleSection.emit(section.id)"
+      (sectionDragStart)="sectionDragStart.emit(i)"
+      (sectionDragOver)="sectionDragOver.emit({ event: $event, index: i })"
+      (sectionDragLeave)="sectionDragLeave.emit()"
+      (sectionDrop)="sectionDrop.emit(i)"
+      (sectionDragEnd)="sectionDragEnd.emit()"
+      (editSectionStart)="editSectionStart.emit(section)"
+      (editSectionSave)="editSectionSave.emit({ section: section, title: $event })"
+      (editSectionCancel)="editSectionCancel.emit()"
+      (deleteSection)="deleteSection.emit(section)"
+      (startAddLesson)="startAddLesson.emit(section.id)"
+      (lessonDragStart)="lessonDragStart.emit($event)"
+      (lessonDragOver)="lessonDragOver.emit($event)"
+      (lessonDragLeave)="lessonDragLeave.emit()"
+      (lessonDrop)="lessonDrop.emit($event)"
+      (lessonDragEnd)="lessonDragEnd.emit()"
+      (lessonEditStart)="lessonEditStart.emit($event)"
+      (lessonEditSave)="lessonEditSave.emit($event)"
+      (lessonEditCancel)="lessonEditCancel.emit()"
+      (deleteLesson)="deleteLesson.emit($event)"
+      (togglePreview)="togglePreview.emit($event)"
+      (watchVideo)="watchVideo.emit($event)"
+      (addLesson)="addLesson.emit($event)"
+      (cancelAddLesson)="cancelAddLesson.emit()"
+      (startAddLessonFromList)="startAddLesson.emit($event)"/>
+  }
+
+  @if (isAddingSection) {
+    <app-section-form
+      [isSaving]="isSavingSection"
+      (save)="addSectionSave.emit($event)"
+      (cancel)="addSectionCancel.emit()"/>
+  }
+
+  @if (!isAddingSection) {
+    <button (click)="startAddSection.emit()"
+      class="w-full my-8 flex items-center justify-center gap-2 py-3 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-400 hover:text-blue-600 hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer group">
+      <svg class="w-4 h-4 group-hover:rotate-90 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+      </svg>
+      Add Section
+    </button>
+  }
+
+  @if (curriculum.sections.length === 0 && !isAddingSection) {
+    <div class="flex flex-col  items-center justify-center py-16 gap-3">
+      <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+      </svg>
+      <p class="text-gray-500 font-medium">No curriculum yet</p>
+      <p class="text-gray-400 text-sm">Start by adding your first section above</p>
+    </div>
+  }
+
+</div>

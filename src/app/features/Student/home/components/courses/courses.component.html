@@ -1,0 +1,245 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <div class="max-w-7xl mx-auto px-4 py-8">
+
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">All Courses</h1>
+    </div>
+
+    <div class="flex gap-6">
+
+      <aside class="w-64 flex-shrink-0 hidden lg:block">
+        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sticky top-4 space-y-6">
+
+          @if (hasActiveFilters) {
+            <button (click)="clearFilters()"
+              class="w-full text-sm text-red-500 hover:text-red-600 font-medium flex items-center gap-1 cursor-pointer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+              Clear all filters
+            </button>
+          }
+
+          <div class="relative" (click)="$event.stopPropagation()">
+            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Search</p>
+            <input
+              type="text"
+              [(ngModel)]="filter.search"
+              (input)="onSearchInput()"
+              (focus)="onSearchFocus()"
+              placeholder="Search courses..."
+              class="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm
+                     focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400
+                     transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-white
+                     placeholder-gray-400 dark:placeholder-gray-500 cursor-text" />
+
+            @if (showSuggestions || suggestionsLoading) {
+              <div class="absolute z-50 top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden">
+
+                @if (isShowingPopular && !suggestionsLoading) {
+                  <p class="px-3 pt-2 pb-1 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+                    🔥 Popular Courses
+                  </p>
+                }
+
+                @if (suggestionsLoading) {
+                  <div class="flex items-center justify-center py-4 gap-2 text-gray-400 text-xs">
+                    <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                    </svg>
+                    Loading...
+                  </div>
+                }
+
+                @if (!suggestionsLoading) {
+                  @for (s of suggestions; track s.courseId) {
+                    <button (click)="selectSuggestion(s)"
+                      class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors text-left cursor-pointer">
+                      @if (s.thumbnailUrl) {
+                        <img [src]="s.thumbnailUrl" class="w-8 h-8 rounded object-cover shrink-0" alt="{{ s.title }}" />
+                      } @else {
+                        <div class="w-8 h-8 rounded bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
+                          <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                          </svg>
+                        </div>
+                      }
+                      <div class="min-w-0">
+                        <p class="text-sm text-gray-800 dark:text-gray-200 truncate">{{ s.title }}</p>
+                        <p class="text-xs text-blue-500">{{ s.category }}</p>
+                      </div>
+                      <svg class="w-3.5 h-3.5 text-gray-300 dark:text-gray-600 ml-auto shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                      </svg>
+                    </button>
+                  }
+                }
+
+              </div>
+            }
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Category</p>
+            <div class="space-y-1">
+              @for (cat of categories; track cat.id) {
+                <div>
+                  <button (click)="setCategory(cat.id)"
+                    [class]="'w-full text-left px-2 py-1.5 rounded-lg text-sm transition-colors flex justify-between items-center cursor-pointer '
+                      + (filter.categoryId === cat.id ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700')">
+                    <span>{{ cat.name }}</span>
+                    <span class="text-xs text-gray-400 dark:text-gray-500">{{ cat.totalCourses }}</span>
+                  </button>
+
+                  @if (filter.categoryId === cat.id) {
+                    <div class="ml-3 mt-1 space-y-0.5">
+                      @for (sub of cat.subCategories; track sub.id) {
+                        <button (click)="setSubCategory(cat.id, sub.id)"
+                          [class]="'w-full text-left px-2 py-1 rounded-lg text-xs transition-colors flex justify-between cursor-pointer '
+                            + (filter.subCategoryId === sub.id ? 'text-blue-600 font-medium' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200')">
+                          <span>{{ sub.name }}</span>
+                          <span>{{ sub.courseCount }}</span>
+                        </button>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Level</p>
+            <div class="space-y-1">
+              @for (lvl of levels; track lvl) {
+                <button (click)="setLevel(lvl)"
+                  [class]="'w-full text-left px-2 py-1.5 rounded-lg text-sm transition-colors cursor-pointer '
+                    + (filter.level === lvl ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700')">
+                  {{ lvl }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <div>
+            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Language</p>
+            <div class="space-y-1">
+              @for (lang of languages; track lang) {
+                <button (click)="setLanguage(lang)"
+                  [class]="'w-full text-left px-2 py-1.5 rounded-lg text-sm transition-colors cursor-pointer '
+                    + (filter.language === lang ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 font-medium' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700')">
+                  {{ lang }}
+                </button>
+              }
+            </div>
+          </div>
+
+        </div>
+      </aside>
+
+      <div class="flex-1 min-w-0">
+
+        <div class="flex items-center justify-between mb-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 px-4 py-2">
+          <span class="text-sm text-gray-500 dark:text-gray-400">Sort by:</span>
+          <div class="flex gap-1">
+            @for (opt of sortOptions; track opt.value) {
+              <button (click)="setSort(opt.value)"
+                [class]="'px-3 py-1  rounded-lg text-xs font-medium transition-colors cursor-pointer '
+                  + (filter.sortBy === opt.value ? 'bg-blue-600 text-white' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700')">
+                {{ opt.label }}
+              </button>
+            }
+          </div>
+        </div>
+
+        @if (loading) {
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+            @for (s of skeletons; track s) {
+              <div class="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden animate-pulse">
+                <div class="h-44 bg-gray-200 dark:bg-gray-700"></div>
+                <div class="p-4 space-y-3">
+                  <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+                  <div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                  <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+                  <div class="flex items-center gap-2 pt-1">
+                    <div class="h-3 w-16 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                    <div class="h-3 w-10 bg-gray-100 dark:bg-gray-600 rounded ml-auto"></div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        @if (error) {
+          <div class="text-center py-20 text-gray-400 dark:text-gray-500">
+            <svg class="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p class="text-sm">Failed to load courses.</p>
+            <button (click)="loadCourses()" class="mt-3 text-blue-500 text-sm hover:underline cursor-pointer">Try again</button>
+          </div>
+        }
+
+        @if (!loading && !error && filteredCourses.length === 0) {
+          <div class="text-center py-20 text-gray-400 dark:text-gray-500">
+            <svg class="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p class="text-sm">No courses match your filters.</p>
+            <button (click)="clearFilters()" class="mt-3 text-blue-500 text-sm hover:underline cursor-pointer">Clear filters</button>
+          </div>
+        }
+
+        @if (!loading && !error && filteredCourses.length > 0) {
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+            @for (course of filteredCourses; track course.id) {
+              <app-course-card [course]="course" [searchQuery]="filter.search ?? ''" />
+            }
+          </div>
+
+          @if (totalPages > 1) {
+            <div class="flex items-center justify-center gap-2 mt-8">
+              <button
+                (click)="goToPage((filter.pageIndex ?? 1) - 1)"
+                [disabled]="!hasPrev"
+                class="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors">
+                ← Prev
+              </button>
+
+              @if ((filter.pageIndex ?? 1) > 3) {
+                <button (click)="goToPage(1)" class="px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">1</button>
+                <span class="text-gray-400 dark:text-gray-500 text-sm">...</span>
+              }
+
+              @for (p of pages; track p) {
+                <button (click)="goToPage(p)"
+                  [class]="'px-3 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer '
+                    + (p === (filter.pageIndex ?? 1) ? 'bg-blue-600 text-white' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700')">
+                  {{ p }}
+                </button>
+              }
+
+              @if ((filter.pageIndex ?? 1) < totalPages - 2) {
+                <span class="text-gray-400 dark:text-gray-500 text-sm">...</span>
+                <button (click)="goToPage(totalPages)" class="px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">{{ totalPages }}</button>
+              }
+
+              <button
+                (click)="goToPage((filter.pageIndex ?? 1) + 1)"
+                [disabled]="!hasNext"
+                class="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors">
+                Next →
+              </button>
+            </div>
+          }
+        }
+
+      </div>
+    </div>
+  </div>
+</div>

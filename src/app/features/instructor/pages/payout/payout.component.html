@@ -1,0 +1,197 @@
+<div class="p-6 min-h-screen dark:bg-gray-900">
+  <div class="w-full mx-auto space-y-6">
+
+    <!-- Page Title -->
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Payout Dashboard</h1>
+
+    <!-- ─── Wallet Info Card ─── -->
+    <div class="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow">
+      <div class="mb-4">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Wallet Overview</h2>
+      </div>
+
+      @if (walletLoading()) {
+        <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+          <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+          </svg>
+          Loading wallet...
+        </div>
+      } @else if (walletError()) {
+        <div class="p-4 text-sm text-red-800 dark:text-red-300 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          {{ walletError() }}
+        </div>
+      } @else if (wallet()) {
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Total Earned</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ wallet()!.totalEarned }}</p>
+          </div>
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Total Paid Out</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ wallet()!.totalPaidOut }}</p>
+          </div>
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Pending Amount</p>
+            <p class="text-2xl font-bold text-yellow-500 dark:text-yellow-400">${{ wallet()!.pendingAmount }}</p>
+          </div>
+          <div class="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl col-span-2 md:col-span-1">
+            <p class="text-xs text-blue-500 dark:text-blue-400 mb-1">Available Balance</p>
+            <p class="text-2xl font-bold text-blue-700 dark:text-blue-300">${{ wallet()!.availableBalance }}</p>
+          </div>
+          <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Platform Commission</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ wallet()!.platformCommission }}%</p>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- ─── Connect Stripe Card ─── -->
+    @if (!isStripeConnected()) {
+      <div class="p-6 bg-white dark:bg-gray-800 border border-yellow-300 dark:border-yellow-600 rounded-2xl shadow">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">Connect Stripe</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">You need to connect your Stripe account before requesting payouts.</p>
+          </div>
+
+          <button
+            (click)="connectStripe()"
+            [disabled]="stripeLoading()"
+            class="shrink-0 px-6 py-2.5 text-sm font-medium text-white bg-yellow-500 hover:bg-yellow-600 disabled:opacity-50 focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-700 rounded-lg transition-all">
+            @if (stripeLoading()) {
+              <span class="flex items-center gap-2">
+                <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                </svg>
+                Connecting...
+              </span>
+            } @else {
+              Connect Stripe
+            }
+          </button>
+        </div>
+
+        @if (stripeSuccess()) {
+          <div class="mt-4 p-3 text-sm text-green-800 dark:text-green-300 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+            {{ stripeSuccess() }}
+          </div>
+        }
+        @if (stripeError()) {
+          <div class="mt-4 p-3 text-sm text-red-800 dark:text-red-300 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            {{ stripeError() }}
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ─── Request Payout ─── -->
+    <div class="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Request Payout</h2>
+
+      @if (requestSuccess()) {
+        <div class="p-4 mb-4 text-sm text-green-800 dark:text-green-300 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+          {{ requestSuccess() }}
+        </div>
+      }
+      @if (requestError()) {
+        <div class="p-4 mb-4 text-sm text-red-800 dark:text-red-300 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          {{ requestError() }}
+        </div>
+      }
+
+      <div class="flex gap-3 items-end">
+        <div class="flex-1">
+          <label class="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Amount ($)</label>
+          <input
+            type="number"
+            [value]="requestAmount()"
+            (input)="onAmountChange($any($event.target).value)"
+            placeholder="Enter amount"
+            [disabled]="!isStripeConnected()"
+            class="w-full px-4 py-2.5 text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:placeholder-gray-400 disabled:opacity-50 disabled:cursor-not-allowed"/>
+        </div>
+        <button
+          (click)="requestPayout()"
+          [disabled]="!canRequest() || requestLoading()"
+          class="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 rounded-lg transition-all">
+          @if (requestLoading()) {
+            <span class="flex items-center gap-2">
+              <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+              </svg>
+              Requesting...
+            </span>
+          } @else {
+            Request Payout
+          }
+        </button>
+      </div>
+    </div>
+
+    <!-- ─── My Payouts Table ─── -->
+    <div class="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow">
+      <div class="mb-4">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white">My Payouts</h2>
+      </div>
+
+      @if (payoutsLoading()) {
+        <div class="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+          <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+          </svg>
+          Loading payouts...
+        </div>
+      } @else if (payoutsError()) {
+        <div class="p-4 text-sm text-red-800 dark:text-red-300 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          {{ payoutsError() }}
+        </div>
+      } @else if (hasPayouts()) {
+        <div class="relative overflow-x-auto rounded-xl">
+          <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="text-xs text-gray-700 dark:text-gray-400 uppercase bg-gray-50 dark:bg-gray-700">
+              <tr>
+                <th class="px-4 py-3">#</th>
+                <th class="px-4 py-3">Amount</th>
+                <th class="px-4 py-3">Platform Fee</th>
+                <th class="px-4 py-3">Status</th>
+                <th class="px-4 py-3">Notes</th>
+                <th class="px-4 py-3">Created At</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (payout of payouts(); track payout.id) {
+                <tr class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <td class="px-4 py-3 font-medium text-gray-900 dark:text-white">{{ payout.id }}</td>
+                  <td class="px-4 py-3">${{ payout.amount }}</td>
+                  <td class="px-4 py-3">${{ payout.platformFee }}</td>
+                  <td class="px-4 py-3">
+                    <span class="px-2.5 py-1 text-xs font-medium rounded-full {{ getStatusClass(payout.status) }}">
+                      {{ payout.status }}
+                    </span>
+                  </td>
+                  <td class="px-4 py-3">{{ payout.notes || '—' }}</td>
+                  <td class="px-4 py-3">{{ payout.createdAt | date: 'mediumDate' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="text-center py-10 text-gray-400 dark:text-gray-500">
+          <svg class="mx-auto mb-3 w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M9 17v-2a4 4 0 014-4h0a4 4 0 014 4v2M9 7a4 4 0 110 8 4 4 0 010-8z"/>
+          </svg>
+          <p class="text-sm">No payouts yet.</p>
+        </div>
+      }
+    </div>
+
+  </div>
+</div>

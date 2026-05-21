@@ -1,0 +1,171 @@
+<nav class="w-full bg-white dark:bg-gray-900 shadow-md z-[100] top-0 start-0 fixed min-h-[80px] flex items-center border-b border-gray-200 dark:border-gray-700 transition-all duration-500">
+  <div class="w-full lg:container lg:mx-auto flex flex-wrap items-center justify-between h-full px-4 lg:px-0">
+
+    <div class="flex items-center flex-shrink-0">
+      <a href="#" class="flex items-center h-[80px] cursor-pointer gap-2">
+        <svg width="52" height="52" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="70,8 118,35 118,90 70,117 22,90 22,35" fill="#4A3ADF"/>
+          <polygon points="70,18 108,41 108,84 70,107 32,84 32,41" fill="none" stroke="white" stroke-width="1.5" opacity="0.2"/>
+          <rect x="48" y="38" width="9" height="64" rx="4" fill="white"/>
+          <line x1="57" y1="70" x2="88" y2="39" stroke="white" stroke-width="9" stroke-linecap="round"/>
+          <line x1="57" y1="70" x2="88" y2="101" stroke="white" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="112" cy="35" r="12" fill="#F97316"/>
+          <circle cx="112" cy="35" r="6" fill="white" opacity=".4"/>
+        </svg>
+        <div class="flex flex-col leading-none">
+          <span style="font-family:system-ui,sans-serif; font-size:22px; font-weight:800; color:#4A3ADF; letter-spacing:-0.5px;">
+            Kno<span style="color:#F97316;">via</span>
+          </span>
+        </div>
+      </a>
+    </div>
+
+    <div class="flex lg:order-2 items-center gap-3">
+
+      <!-- Dark Mode Toggle -->
+      <button (click)="themeService.toggleTheme()"
+        class="p-2 rounded-full cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300">
+        @if (themeService.isDark()) {
+          <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm0 15a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm10-5a1 1 0 110 2h-1a1 1 0 110-2h1zM3 12a1 1 0 110 2H2a1 1 0 110-2h1zm15.657-6.343a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM6.464 17.536a1 1 0 010 1.414l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 0zM17.536 17.536a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zM6.464 6.464a1 1 0 010 1.414l-.707.707A1 1 0 014.343 6.47l.707-.707a1 1 0 011.414 0zM12 7a5 5 0 110 10A5 5 0 0112 7z"/>
+          </svg>
+        } @else {
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z"/>
+          </svg>
+        }
+      </button>
+
+      <!-- Notifications Bell -->
+      <div class="relative">
+        <button (click)="toggleNotif()"
+          class="relative text-gray-600 dark:text-gray-400 hover:text-[var(--main-color)] text-lg transition-colors duration-200 cursor-pointer">
+          <i class="fa-regular fa-bell"></i>
+          @if (unreadCount > 0) {
+            <span class="absolute -top-2 -right-2 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+              {{ unreadCount > 9 ? '9+' : unreadCount }}
+            </span>
+          }
+        </button>
+
+        @if (isNotifOpen()) {
+          <div class="fixed inset-0 z-40" (click)="closeNotif()"></div>
+
+          <div class="absolute right-0 mt-3 w-80 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 z-50 overflow-hidden">
+
+            <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+              <span class="text-sm font-semibold text-gray-900 dark:text-white">Notifications</span>
+              @if (unreadCount > 0) {
+                <button (click)="markAllAsRead()"
+                  class="text-xs text-[var(--main-color)] hover:underline cursor-pointer">
+                  Mark all as read
+                </button>
+              }
+            </div>
+
+            <div class="max-h-80 overflow-y-auto divide-y divide-gray-50 dark:divide-gray-700">
+
+              @if (isNotifLoading) {
+                <div class="flex items-center justify-center py-8">
+                  <svg class="w-5 h-5 animate-spin text-gray-400" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                  </svg>
+                </div>
+              }
+
+              @if (!isNotifLoading && notifications.length === 0) {
+                <div class="flex flex-col items-center justify-center py-10 gap-2">
+                  <i class="fa-regular fa-bell-slash text-2xl text-gray-300 dark:text-gray-600"></i>
+                  <p class="text-xs text-gray-400 dark:text-gray-500">No notifications yet</p>
+                </div>
+              }
+
+              @for (notif of notifications; track notif.id) {
+                <div (click)="markAsRead(notif)"
+                  class="flex items-start gap-3 px-4 py-3 cursor-pointer transition-colors"
+                  [class.bg-blue-50]="!notif.isRead"
+                  [class.hover:bg-gray-50]="notif.isRead"
+                  [class.hover:bg-blue-100]="!notif.isRead">
+
+                  <div class="mt-1.5 flex-shrink-0">
+                    @if (!notif.isRead) {
+                      <span class="w-2 h-2 rounded-full bg-[var(--main-color)] block"></span>
+                    } @else {
+                      <span class="w-2 h-2 rounded-full bg-transparent block"></span>
+                    }
+                  </div>
+
+                  <div class="flex-1 min-w-0">
+                    <p class="text-xs font-semibold text-gray-900 dark:text-white truncate">{{ notif.title }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">{{ notif.message }}</p>
+                    <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-1">{{ notif.createdAt | date:'short' }}</p>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Wishlist -->
+      <a routerLink="/student/wishlist"
+         class="relative text-gray-600 dark:text-gray-400 hover:text-[var(--main-color)] text-lg transition-colors duration-200">
+        <i class="fa-regular fa-heart"></i>
+        @if (wishlistState.count > 0) {
+          <span class="absolute -top-2 -right-2 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+            {{ wishlistState.count }}
+          </span>
+        }
+      </a>
+
+      <!-- Profile -->
+      <a routerLink="/student/profile"
+         class="text-gray-600 dark:text-gray-400 hover:text-[var(--main-color)] text-lg transition-colors duration-200 border-s border-gray-200 dark:border-gray-700 ps-4">
+        <i class="fa-solid fa-user"></i>
+      </a>
+
+      <!-- Burger -->
+      <button (click)="toggleMenu()" type="button"
+        class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 dark:text-gray-400 rounded-lg lg:hidden hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-600">
+        <svg class="w-6 h-6" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Nav links -->
+    <div class="w-full lg:flex lg:w-auto lg:order-1 lg:grow lg:justify-center"
+         [class.hidden]="!isMenuOpen()"
+         [class.lg:flex]="true">
+      <ul class="flex flex-col lg:flex-row items-center w-full lg:w-auto mt-4 lg:mt-0 p-4 lg:p-0 font-medium border-t lg:border-0 border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 lg:bg-white lg:dark:bg-gray-900 lg:space-x-8">
+
+        <li class="group relative w-full lg:w-auto text-center border-b lg:border-0 border-gray-100 dark:border-gray-700">
+          <a routerLink="/student/home" (click)="closeMenu()"
+             class="block py-4 lg:py-0 text-gray-700 dark:text-gray-300 hover:text-[var(--main-color)] dark:hover:text-[var(--main-color)] text-sm uppercase tracking-wide transition-colors cursor-pointer">
+            Home
+            <span class="hidden lg:block absolute bottom-[-6px] left-0 h-[2px] w-0 rounded-full bg-[var(--main-color)] transition-all duration-300 ease-out group-hover:w-full"></span>
+          </a>
+        </li>
+
+        <li class="group relative w-full lg:w-auto text-center border-b lg:border-0 border-gray-100 dark:border-gray-700">
+          <a (click)="scrollTo('trending')"
+             class="block py-4 lg:py-0 text-gray-700 dark:text-gray-300 hover:text-[var(--main-color)] dark:hover:text-[var(--main-color)] text-sm uppercase tracking-wide transition-colors cursor-pointer">
+            Trending Now
+            <span class="hidden lg:block absolute bottom-[-6px] left-0 h-[2px] w-0 rounded-full bg-[var(--main-color)] transition-all duration-300 ease-out group-hover:w-full"></span>
+          </a>
+        </li>
+
+        <li class="group relative w-full lg:w-auto text-center">
+          <a (click)="scrollTo('popular')"
+             class="block py-4 lg:py-0 text-gray-700 dark:text-gray-300 hover:text-[var(--main-color)] dark:hover:text-[var(--main-color)] text-sm uppercase tracking-wide transition-colors cursor-pointer">
+            Most Popular
+            <span class="hidden lg:block absolute bottom-[-6px] left-0 h-[2px] w-0 rounded-full bg-[var(--main-color)] transition-all duration-300 ease-out group-hover:w-full"></span>
+          </a>
+        </li>
+
+      </ul>
+    </div>
+
+  </div>
+</nav>

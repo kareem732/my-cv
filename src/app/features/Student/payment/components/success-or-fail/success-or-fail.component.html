@@ -1,0 +1,63 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+  <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-8 max-w-sm w-full text-center shadow-sm space-y-5">
+
+    @if (isSuccess()) {
+      <div class="w-16 h-16 bg-green-50 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto">
+        <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+
+      <div class="space-y-1">
+        <h1 class="text-lg font-bold text-gray-900 dark:text-white">
+          {{ isFree() ? 'Enrolled Successfully!' : 'Payment Successful!' }}
+        </h1>
+        <p class="text-sm text-gray-400 dark:text-gray-500">
+          {{ isFree()
+             ? 'You\'re now enrolled. Start learning right away!'
+             : 'Your payment has been processed. Enjoy your course!' }}
+        </p>
+        @if (orderId()) {
+          <p class="text-xs text-gray-300 dark:text-gray-600 pt-1">Order #{{ orderId() }}</p>
+        }
+      </div>
+
+      <button
+        (click)="goToMyCourses()"
+        class="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white
+               font-semibold text-sm rounded-xl transition-colors">
+        Go to My Courses
+      </button>
+
+    } @else {
+      <div class="w-16 h-16 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto">
+        <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </div>
+
+      <div class="space-y-1">
+        <h1 class="text-lg font-bold text-gray-900 dark:text-white">Payment Failed</h1>
+        <p class="text-sm text-gray-400 dark:text-gray-500">{{ errorMessage() }}</p>
+      </div>
+
+      <div class="space-y-2">
+        <button
+          (click)="tryAgain()"
+          class="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white
+                 font-semibold text-sm rounded-xl transition-colors">
+          Try Again
+        </button>
+        <button
+          (click)="goToMyCourses()"
+          class="w-full py-3 border border-gray-200 dark:border-gray-700
+                 hover:bg-gray-50 dark:hover:bg-gray-700
+                 text-gray-600 dark:text-gray-300 text-sm rounded-xl transition-colors">
+          Go to My Courses
+        </button>
+      </div>
+    }
+
+  </div>
+</div>

@@ -1,0 +1,276 @@
+<div class="p-6 min-h-screen bg-gray-50 dark:bg-gray-900">
+
+  <!-- Stats -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+    <div class="rounded-2xl p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+      <p class="text-xs mb-1 text-gray-400 dark:text-gray-500">Total Payouts</p>
+      <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ payouts().length }}</p>
+    </div>
+    <div class="rounded-2xl p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+      <p class="text-xs mb-1 text-amber-600 dark:text-amber-400">Pending</p>
+      <p class="text-2xl font-semibold text-amber-700 dark:text-amber-300">{{ countByStatus('pending') }}</p>
+    </div>
+    <div class="rounded-2xl p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+      <p class="text-xs mb-1 text-green-600 dark:text-green-400">Approved</p>
+      <p class="text-2xl font-semibold text-green-700 dark:text-green-300">{{ countByStatus('approved') }}</p>
+    </div>
+    <div class="rounded-2xl p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+      <p class="text-xs mb-1 text-red-500 dark:text-red-400">Rejected</p>
+      <p class="text-2xl font-semibold text-red-700 dark:text-red-300">{{ countByStatus('rejected') }}</p>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
+    <div>
+      <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Payout Management</h1>
+      <p class="text-sm mt-0.5 text-gray-400 dark:text-gray-500">Manage instructor payout requests</p>
+    </div>
+    <div class="relative w-full md:w-72">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 dark:text-gray-500"
+        fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input
+        type="text"
+        #searchInput
+        (input)="onSearch(searchInput.value)"
+        placeholder="Search instructor or payout ID..."
+        class="w-full rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500
+               bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700
+               text-gray-900 dark:text-white placeholder-gray-300 dark:placeholder-gray-500 cursor-text"
+      />
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex flex-wrap gap-2 mb-6">
+    <button (click)="setStatus('ALL')" class="px-4 py-1.5 rounded-full text-sm font-medium transition cursor-pointer"
+      [ngClass]="selectedStatus() === 'ALL'
+        ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border border-gray-900 dark:border-white'
+        : 'bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500'">
+      All
+    </button>
+    <button (click)="setStatus('Pending')" class="px-4 py-1.5 rounded-full text-sm font-medium transition cursor-pointer"
+      [ngClass]="selectedStatus() === 'Pending'
+        ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700'
+        : 'bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500'">
+      Pending
+    </button>
+    <button (click)="setStatus('Approved')" class="px-4 py-1.5 rounded-full text-sm font-medium transition cursor-pointer"
+      [ngClass]="selectedStatus() === 'Approved'
+        ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-300 dark:border-green-700'
+        : 'bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500'">
+      Approved
+    </button>
+    <button (click)="setStatus('Rejected')" class="px-4 py-1.5 rounded-full text-sm font-medium transition cursor-pointer"
+      [ngClass]="selectedStatus() === 'Rejected'
+        ? 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-300 dark:border-red-700'
+        : 'bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:border-gray-400 dark:hover:border-gray-500'">
+      Rejected
+    </button>
+  </div>
+
+  <!-- Loading Skeleton -->
+  @if (loading()) {
+    <div class="overflow-x-auto rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+      <table class="w-full text-sm text-left">
+        <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700">
+          <tr>
+            <th class="px-5 py-3 text-xs font-medium text-gray-400 dark:text-gray-500">ID</th>
+            <th class="px-5 py-3 text-xs font-medium text-gray-400 dark:text-gray-500">Instructor</th>
+            <th class="px-5 py-3 text-xs font-medium text-gray-400 dark:text-gray-500">Amount</th>
+            <th class="px-5 py-3 text-xs font-medium text-gray-400 dark:text-gray-500">Fee</th>
+            <th class="px-5 py-3 text-xs font-medium text-gray-400 dark:text-gray-500">Status</th>
+            <th class="px-5 py-3 text-xs font-medium text-gray-400 dark:text-gray-500">Created</th>
+            <th class="px-5 py-3 text-xs font-medium text-gray-400 dark:text-gray-500">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (i of [1,2,3,4,5]; track i) {
+            <tr class="border-b border-gray-100 dark:border-gray-700 animate-pulse">
+              <td class="px-5 py-4">
+                <div class="h-3 w-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
+              </td>
+              <td class="px-5 py-4">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-gray-200 dark:bg-gray-700 flex-shrink-0"></div>
+                  <div class="space-y-1.5">
+                    <div class="h-3 w-28 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                    <div class="h-2.5 w-16 bg-gray-100 dark:bg-gray-600 rounded"></div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-5 py-4">
+                <div class="h-3 w-16 bg-gray-200 dark:bg-gray-700 rounded"></div>
+              </td>
+              <td class="px-5 py-4">
+                <div class="h-3 w-14 bg-gray-200 dark:bg-gray-700 rounded"></div>
+              </td>
+              <td class="px-5 py-4">
+                <div class="h-5 w-16 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+              </td>
+              <td class="px-5 py-4">
+                <div class="h-3 w-20 bg-gray-200 dark:bg-gray-700 rounded"></div>
+              </td>
+              <td class="px-5 py-4">
+                <div class="flex flex-col gap-2">
+                  <div class="flex gap-1.5">
+                    <div class="h-14 flex-1 bg-gray-100 dark:bg-gray-700 rounded-lg"></div>
+                    <div class="h-14 w-14 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+                  </div>
+                  <div class="flex gap-1.5">
+                    <div class="h-14 flex-1 bg-gray-100 dark:bg-gray-700 rounded-lg"></div>
+                    <div class="h-14 w-14 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- Empty -->
+  @if (!loading() && filteredPayouts().length === 0) {
+    <div class="rounded-2xl p-12 text-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+      <div class="w-11 h-11 rounded-full flex items-center justify-center mx-auto mb-3 bg-gray-100 dark:bg-gray-700">
+        <svg class="w-5 h-5 text-gray-300 dark:text-gray-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75"/>
+        </svg>
+      </div>
+      <p class="font-medium text-gray-500 dark:text-gray-400">No payouts found</p>
+      <p class="text-sm mt-1 text-gray-400 dark:text-gray-500">Try adjusting your filters or search term</p>
+    </div>
+  }
+
+  <!-- Table -->
+  @if (!loading() && filteredPayouts().length > 0) {
+    <div class="overflow-x-auto rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+      <table class="w-full text-sm text-left">
+
+        <thead class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700">
+          <tr>
+            <th class="px-5 py-3 text-xs font-medium text-gray-400 dark:text-gray-500">ID</th>
+            <th class="px-5 py-3 text-xs font-medium text-gray-400 dark:text-gray-500">Instructor</th>
+            <th class="px-5 py-3 text-xs font-medium text-gray-400 dark:text-gray-500">Amount</th>
+            <th class="px-5 py-3 text-xs font-medium text-gray-400 dark:text-gray-500">Fee</th>
+            <th class="px-5 py-3 text-xs font-medium text-gray-400 dark:text-gray-500">Status</th>
+            <th class="px-5 py-3 text-xs font-medium text-gray-400 dark:text-gray-500">Created</th>
+            <th class="px-5 py-3 text-xs font-medium text-gray-400 dark:text-gray-500">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (payout of filteredPayouts(); track payout.id) {
+            <tr class="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/40 transition-colors">
+
+              <td class="px-5 py-3.5 text-xs font-medium text-gray-400 dark:text-gray-500">#{{ payout.id }}</td>
+
+              <td class="px-5 py-3.5">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full text-xs font-medium flex items-center justify-center flex-shrink-0
+                              bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400">
+                    {{ getInitials(payout.instructorName) }}
+                  </div>
+                  <div>
+                    <p class="text-xs font-medium text-gray-900 dark:text-white">{{ payout.instructorName }}</p>
+                    <p class="text-xs text-gray-300 dark:text-gray-500">{{ payout.instructorId }}</p>
+                  </div>
+                </div>
+              </td>
+
+              <td class="px-5 py-3.5 text-xs font-semibold text-gray-900 dark:text-white">
+                {{ payout.amount | currency:'USD' }}
+              </td>
+
+              <td class="px-5 py-3.5 text-xs font-medium text-red-500 dark:text-red-400">
+                {{ payout.platformFee | currency:'USD' }}
+              </td>
+
+              <td class="px-5 py-3.5">
+                <span class="px-2 py-0.5 rounded-full text-xs font-medium" [ngClass]="getStatusClass(payout.status)">
+                  {{ payout.status }}
+                </span>
+              </td>
+
+              <td class="px-5 py-3.5 text-xs text-gray-300 dark:text-gray-500">
+                {{ payout.createdAt | date:'mediumDate' }}
+              </td>
+
+              <td class="px-5 py-3.5">
+                @if (payout.status.toLowerCase() === 'pending') {
+                  <div class="flex flex-col gap-1.5" style="min-width:200px;">
+                    <div class="flex gap-1.5 items-stretch">
+                      <textarea
+                        [(ngModel)]="approveNotes[payout.id]"
+                        rows="2"
+                        placeholder="Approval notes..."
+                        class="flex-1 rounded-lg p-2 text-xs focus:outline-none focus:ring-2 focus:ring-green-400 resize-none cursor-text
+                               bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600
+                               text-gray-700 dark:text-gray-300 placeholder-gray-300 dark:placeholder-gray-500"
+                      ></textarea>
+                      <button
+                        (click)="approve(payout)"
+                        class="rounded-lg px-2.5 text-xs font-medium flex flex-col items-center justify-center gap-0.5 flex-shrink-0 cursor-pointer
+                               bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800
+                               text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/50 transition-colors"
+                        style="min-width:52px;">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                        </svg>
+                        Approve
+                      </button>
+                    </div>
+                    <div class="flex gap-1.5 items-stretch">
+                      <textarea
+                        [(ngModel)]="rejectReasons[payout.id]"
+                        rows="2"
+                        placeholder="Rejection reason..."
+                        class="flex-1 rounded-lg p-2 text-xs focus:outline-none focus:ring-2 focus:ring-red-400 resize-none cursor-text
+                               bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600
+                               text-gray-700 dark:text-gray-300 placeholder-gray-300 dark:placeholder-gray-500"
+                      ></textarea>
+                      <button
+                        (click)="reject(payout)"
+                        class="rounded-lg px-2.5 text-xs font-medium flex flex-col items-center justify-center gap-0.5 flex-shrink-0 cursor-pointer
+                               bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800
+                               text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
+                        style="min-width:52px;">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                } @else {
+                  <div class="flex flex-col gap-1">
+                    @if (payout.notes) {
+                      <div class="rounded-lg px-2.5 py-1.5 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
+                        <p class="text-xs font-medium text-green-600 dark:text-green-400">Notes</p>
+                        <p class="text-xs mt-0.5 text-green-700 dark:text-green-300">{{ payout.notes }}</p>
+                      </div>
+                    }
+                    @if (payout.rejectionReason) {
+                      <div class="rounded-lg px-2.5 py-1.5 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                        <p class="text-xs font-medium text-red-500 dark:text-red-400">Reason</p>
+                        <p class="text-xs mt-0.5 text-red-600 dark:text-red-300">{{ payout.rejectionReason }}</p>
+                      </div>
+                    }
+                    @if (!payout.notes && !payout.rejectionReason) {
+                      <span class="text-xs text-gray-200 dark:text-gray-600">—</span>
+                    }
+                  </div>
+                }
+              </td>
+
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+</div>

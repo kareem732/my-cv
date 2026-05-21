@@ -1,0 +1,91 @@
+<div class="space-y-4">
+
+  <!-- Loading -->
+  @if (isLoading) {
+    <div class="space-y-3 animate-pulse">
+      @for (s of [1,2,3]; track s) {
+        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden">
+          <div class="p-4 flex items-center gap-3">
+            <div class="w-5 h-5 bg-gray-200 dark:bg-gray-600 rounded"></div>
+            <div class="h-4 bg-gray-200 dark:bg-gray-600 rounded w-1/3"></div>
+            <div class="ml-auto h-3 bg-gray-100 dark:bg-gray-700 rounded w-20"></div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error && !isLoading) {
+    <div class="flex flex-col items-center justify-center py-12 gap-3">
+      <div class="flex items-center gap-2 p-4 text-red-800 dark:text-red-300 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg w-full max-w-md">
+        <p class="text-sm font-medium">{{ error }}</p>
+      </div>
+      <button (click)="load()" class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 cursor-pointer transition-colors">
+        Try Again
+      </button>
+    </div>
+  }
+
+  <!-- Content -->
+  @if (!isLoading && curriculum) {
+
+    <app-curriculum-stats [curriculum]="curriculum"/>
+
+    <app-section-list
+      [curriculum]="curriculum"
+      [expandedSections]="expandedSections"
+      [editingSectionId]="editingSectionId"
+      [editingSectionTitle]="editingSectionTitle"
+      [isSavingSection]="isSavingSection"
+      [isAddingSection]="isAddingSection"
+      [editingLessonId]="editingLessonId"
+      [addingLessonToSectionId]="addingLessonToSectionId"
+      [isSavingLesson]="isSavingLesson"
+      [lessonEditInitialData]="lessonForm"
+      [draggedSectionIndex]="draggedSectionIndex"
+      [dragOverSectionIndex]="dragOverSectionIndex"
+      [draggedLessonIndex]="draggedLessonIndex"
+      [draggedLessonSectionId]="draggedLessonSectionId"
+      [dragOverLessonIndex]="dragOverLessonIndex"
+      (toggleSection)="toggleSection($event)"
+      (sectionDragStart)="onSectionDragStart($event)"
+      (sectionDragOver)="onSectionDragOver($event)"
+      (sectionDragLeave)="onSectionDragLeave()"
+      (sectionDrop)="onSectionDrop($event)"
+      (sectionDragEnd)="onSectionDragEnd()"
+      (editSectionStart)="onEditSectionStart($event)"
+      (editSectionSave)="onEditSectionSave($event)"
+      (editSectionCancel)="editingSectionId = null"
+      (deleteSection)="onDeleteSection($event)"
+      (startAddLesson)="startAddLesson($event)"
+      (addSectionSave)="onAddSectionSave($event)"
+      (addSectionCancel)="isAddingSection = false"
+      (startAddSection)="startAddSection()"
+      (lessonDragStart)="onLessonDragStart($event)"
+      (lessonDragOver)="onLessonDragOver($event)"
+      (lessonDragLeave)="onLessonDragLeave()"
+      (lessonDrop)="onLessonDrop($event)"
+      (lessonDragEnd)="onLessonDragEnd()"
+      (lessonEditStart)="onLessonEditStart($event)"
+      (lessonEditSave)="onLessonEditSave($event)"
+      (lessonEditCancel)="editingLessonId = null"
+      (deleteLesson)="onDeleteLesson($event)"
+      (togglePreview)="onTogglePreview($event)"
+      (watchVideo)="onWatchVideo($event)"
+      (addLesson)="onAddLesson($event)"
+      (cancelAddLesson)="addingLessonToSectionId = null"/>
+  }
+
+</div>
+
+<app-delete-modal
+  [isOpen]="isDeleteModalOpen"
+  [isLoading]="isDeleteLoading"
+  [targetType]="deleteTargetType"
+  (confirm)="confirmDelete()"
+  (close)="closeDeleteModal()"/>
+
+<app-youtube-modal
+  [lesson]="youTubelesson"
+  (close)="closeYouTubeModal()"/>

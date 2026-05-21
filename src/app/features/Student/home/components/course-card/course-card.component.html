@@ -1,0 +1,86 @@
+<article
+  [routerLink]="['/student/courses', course.id]"
+  class="cursor-pointer rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden flex flex-col">
+
+  <div class="relative">
+    <img
+      [src]="thumbnailSrc"
+      [alt]="course.title"
+      loading="lazy"
+      class="w-full h-44 object-cover" />
+    <span
+      [class]="'absolute top-2 left-2 text-xs font-semibold px-2 py-1 rounded-full ' + levelBadgeClass">
+      {{ course.level }}
+    </span>
+
+    <button
+      (click)="toggleWishlist($event)"
+      [disabled]="isLoading()"
+      class="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm
+             flex items-center justify-center shadow-sm hover:scale-110
+             transition-transform duration-200">
+      @if (isLoading()) {
+        <svg class="w-4 h-4 text-gray-400 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+          <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8v8z"/>
+        </svg>
+      } @else {
+        <svg class="w-4 h-4 transition-colors duration-200"
+             [class.text-red-500]="isWishlisted()"
+             [class.fill-red-500]="isWishlisted()"
+             [class.text-gray-400]="!isWishlisted()"
+             [class.fill-none]="!isWishlisted()"
+             stroke="currentColor" stroke-width="2"
+             viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5
+                   4.5 0 00-6.364-6.364L12 13.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+        </svg>
+      }
+    </button>
+  </div>
+
+  <div class="flex flex-col flex-1 p-4 gap-2">
+
+    <p class="text-xs text-blue-600 dark:text-blue-400 font-medium uppercase tracking-wide">
+      {{ course.subCategoryName }}
+    </p>
+
+    <h3
+      class="text-sm font-semibold text-gray-800 dark:text-white line-clamp-2 leading-snug"
+      [innerHTML]="highlightedTitle">
+    </h3>
+
+    <p class="text-xs text-gray-500 dark:text-gray-400">{{ course.instructorName }}</p>
+
+    <div class="flex items-center gap-1">
+      <span class="text-sm font-bold text-yellow-500">
+        {{ course.averageRating.toFixed(1) }}
+      </span>
+      <div class="flex">
+        @for (star of stars; track star.index) {
+          <span [class]="'text-sm ' + star.cls">★</span>
+        }
+      </div>
+      <span class="text-xs text-gray-400 dark:text-gray-500">({{ formattedStudents }})</span>
+    </div>
+
+    <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-100 dark:border-gray-700">
+      <div class="flex items-center gap-2">
+        @if (course.price === 0) {
+          <span class="text-base font-bold text-green-500">Free</span>
+        } @else {
+          <span class="text-base font-bold text-gray-900 dark:text-white">{{ displayPrice }}</span>
+          @if (hasDiscount) {
+            <span class="text-xs text-gray-400 dark:text-gray-500 line-through">${{ course.price.toFixed(2) }}</span>
+          }
+        }
+      </div>
+      <span class="text-xs text-gray-400 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded-full">
+        {{ course.language }}
+      </span>
+    </div>
+
+  </div>
+</article>

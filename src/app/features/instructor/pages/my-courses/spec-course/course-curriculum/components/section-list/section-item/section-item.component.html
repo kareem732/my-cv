@@ -1,0 +1,137 @@
+<div
+  class="bg-white my-5 dark:bg-gray-800 border rounded-xl overflow-hidden transition-all duration-150"
+  [ngClass]="{
+    'border-blue-400 dark:border-blue-500 shadow-md shadow-blue-100 dark:shadow-blue-900/20': dragOverSectionIndex === index && draggedSectionIndex !== index,
+    'opacity-40 scale-[0.99]': draggedSectionIndex === index,
+    'border-gray-200 dark:border-gray-700': dragOverSectionIndex !== index && draggedSectionIndex !== index
+  }"
+  (dragover)="sectionDragOver.emit($event)"
+  (dragleave)="sectionDragLeave.emit()"
+  (drop)="sectionDrop.emit()"
+  (dragend)="sectionDragEnd.emit()">
+
+  <!-- Section Header -->
+  <div class="flex items-center gap-2 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
+
+    <!-- Drag Handle -->
+    <div draggable="true" (dragstart)="sectionDragStart.emit()"
+      class="p-1 rounded cursor-grab active:cursor-grabbing text-gray-300 hover:text-gray-500 dark:hover:text-gray-400 transition-colors flex-shrink-0">
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M8 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm0 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm0 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm8-12a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm0 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm0 6a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
+      </svg>
+    </div>
+
+    <!-- Collapse Toggle -->
+    <button (click)="toggle.emit()"
+      class="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors cursor-pointer flex-shrink-0">
+      <svg class="w-4 h-4 text-gray-400 transition-transform duration-200"
+        [ngClass]="isExpanded ? 'rotate-90' : ''"
+        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+      </svg>
+    </button>
+
+    <!-- Order Badge -->
+    <span class="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 text-xs font-bold flex items-center justify-center flex-shrink-0">
+      {{ section.order }}
+    </span>
+
+    <!-- Title -->
+    @if (isEditingSection) {
+      <input #titleInput
+        [value]="localTitle"
+        (input)="localTitle = titleInput.value"
+        (keydown.enter)="editSectionSave.emit(localTitle)"
+        (keydown.escape)="editSectionCancel.emit()"
+        class="flex-1 text-sm font-semibold bg-white dark:bg-gray-700 border border-blue-400 rounded-lg px-2 py-1 outline-none text-gray-900 dark:text-white"
+        placeholder="Section title..."/>
+    } @else {
+      <button (click)="toggle.emit()"
+        class="flex-1 text-sm font-semibold text-gray-900 dark:text-white text-left cursor-pointer">
+        {{ section.title }}
+      </button>
+    }
+
+    <!-- Meta -->
+    <div class="flex items-center gap-2 text-xs text-gray-400 flex-shrink-0 mr-1">
+      <span class="hidden sm:inline">{{ section.lessonCount }} lessons</span>
+      <span class="hidden sm:inline">{{ section.totalDuration }}</span>
+    </div>
+
+    <!-- Actions -->
+    @if (isEditingSection) {
+      <div class="flex items-center gap-1 flex-shrink-0">
+        <button (click)="editSectionSave.emit(localTitle)" [disabled]="isSavingSection"
+          class="p-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition-colors cursor-pointer disabled:opacity-50">
+          @if (isSavingSection) {
+            <svg class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+            </svg>
+          } @else {
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+          }
+        </button>
+        <button (click)="editSectionCancel.emit()"
+          class="p-1.5 rounded-lg bg-gray-100 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 text-gray-500 dark:text-gray-300 transition-colors cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    } @else {
+      <div class="flex items-center gap-1 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+        <button (click)="editSectionStart.emit()"
+          class="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-400 hover:text-blue-600 transition-colors cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+          </svg>
+        </button>
+        <button (click)="startAddLesson.emit()"
+          class="p-1.5 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-400 hover:text-blue-600 transition-colors cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+        </button>
+        <button (click)="deleteSection.emit()"
+          class="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+          </svg>
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- Lessons -->
+  @if (isExpanded) {
+    <app-lesson-list
+      [section]="section"
+      [editingLessonId]="editingLessonId"
+      [addingLessonToSectionId]="addingLessonToSectionId"
+      [isSavingLesson]="isSavingLesson"
+      [editInitialData]="lessonEditInitialData"
+      [draggedLessonIndex]="draggedLessonIndex"
+      [draggedLessonSectionId]="draggedLessonSectionId"
+      [dragOverLessonIndex]="dragOverLessonIndex"
+      (lessonDragStart)="lessonDragStart.emit($event)"
+      (lessonDragOver)="lessonDragOver.emit($event)"
+      (lessonDragLeave)="lessonDragLeave.emit()"
+      (lessonDrop)="lessonDrop.emit($event)"
+      (lessonDragEnd)="lessonDragEnd.emit()"
+      (editStart)="lessonEditStart.emit($event)"
+      (editSave)="lessonEditSave.emit($event)"
+      (editCancel)="lessonEditCancel.emit()"
+      (deleteLesson)="deleteLesson.emit($event)"
+      (togglePreview)="togglePreview.emit($event)"
+      (watchVideo)="watchVideo.emit($event)"
+      (addLesson)="addLesson.emit($event)"
+      (cancelAddLesson)="cancelAddLesson.emit()"
+      (startAddLesson)="startAddLessonFromList.emit($event)"/>
+  }
+
+</div>

@@ -1,0 +1,121 @@
+<nav class="w-full bg-white dark:bg-gray-900 shadow-md z-30 top-0 start-0 fixed min-h-[80px] flex items-center border-b border-gray-200 dark:border-gray-700 transition-all duration-500">
+  <div class="w-full lg:container lg:mx-auto flex flex-wrap items-center justify-between h-full">
+
+    <div class="flex items-center flex-shrink-0">
+      <a href="#" class="flex items-center h-[80px] cursor-pointer gap-2">
+        <svg width="52" height="52" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="70,8 118,35 118,90 70,117 22,90 22,35" fill="#4A3ADF"/>
+          <polygon points="70,18 108,41 108,84 70,107 32,84 32,41" fill="none" stroke="white" stroke-width="1.5" opacity="0.2"/>
+          <rect x="48" y="38" width="9" height="64" rx="4" fill="white"/>
+          <line x1="57" y1="70" x2="88" y2="39" stroke="white" stroke-width="9" stroke-linecap="round"/>
+          <line x1="57" y1="70" x2="88" y2="101" stroke="white" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="112" cy="35" r="12" fill="#F97316"/>
+          <circle cx="112" cy="35" r="6" fill="white" opacity=".4"/>
+        </svg>
+        <div class="flex flex-col leading-none">
+          <span style="font-family:system-ui,sans-serif; font-size:22px; font-weight:800; color:#4A3ADF; letter-spacing:-0.5px;">
+            Kno<span style="color:#F97316;">via</span>
+          </span>
+        </div>
+      </a>
+    </div>
+
+    <div class="flex lg:order-2 items-center pe-4 lg:pe-0 gap-2">
+
+      <button (click)="themeService.toggleTheme()"
+        class="p-2 rounded-full cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300">
+        @if (themeService.isDark()) {
+          <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm0 15a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm10-5a1 1 0 110 2h-1a1 1 0 110-2h1zM3 12a1 1 0 110 2H2a1 1 0 110-2h1zm15.657-6.343a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM6.464 17.536a1 1 0 010 1.414l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 0zM17.536 17.536a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zM6.464 6.464a1 1 0 010 1.414l-.707.707A1 1 0 014.343 6.47l.707-.707a1 1 0 011.414 0zM12 7a5 5 0 110 10A5 5 0 0112 7z"/>
+          </svg>
+        } @else {
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z"/>
+          </svg>
+        }
+      </button>
+
+      <ul class="hidden lg:flex flex-row space-x-2 items-center border-s ps-4 border-gray-200 dark:border-gray-700">
+        <li>
+          <button routerLink="/auth/login"
+            class="min-w-[85px] px-2.5 py-1.5 cursor-pointer rounded-md shadow-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-black dark:text-white transition-all duration-300 active:scale-95 text-sm hover:bg-gray-50 dark:hover:bg-gray-700">
+            Login
+          </button>
+        </li>
+        <li>
+          <button routerLink="/auth/register"
+            class="min-w-[85px] px-2.5 py-1.5 cursor-pointer rounded-md shadow-sm bg-[#6556F0] text-white transition-all duration-300 active:scale-95 text-sm hover:bg-[#5446d8]">
+            Sign Up
+          </button>
+        </li>
+      </ul>
+
+      <button data-collapse-toggle="navbar-sticky" type="button"
+        class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 dark:text-gray-400 rounded-lg lg:hidden hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-200 dark:focus:ring-gray-600"
+        aria-controls="navbar-sticky" aria-expanded="false">
+        <svg class="w-6 h-6" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="hidden w-full lg:flex lg:w-auto lg:order-1 lg:grow lg:justify-center" id="navbar-sticky" #navbarSticky>
+      <ul class="flex flex-col lg:flex-row items-center w-full lg:w-auto mt-4 lg:mt-0 p-4 lg:p-0 font-medium border-t lg:border-0 border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 lg:bg-white lg:dark:bg-gray-900 lg:space-x-8">
+
+        <li class="group relative w-full lg:w-auto text-center border-b lg:border-0 border-gray-100 dark:border-gray-700">
+          <a routerLink="./" fragment="home" (click)="navbarSticky.classList.add('hidden')"
+            class="block py-4 lg:py-0 text-gray-700 dark:text-gray-300 hover:text-[#6556F0] dark:hover:text-[#6556F0] text-sm uppercase tracking-wide transition-colors cursor-pointer">
+            Home
+            <span class="hidden lg:block absolute bottom-0 left-0 w-0 h-0.5 bg-[#6556F0] transition-all duration-300 group-hover:w-full lg:-bottom-2"></span>
+          </a>
+        </li>
+
+        <li class="group relative w-full lg:w-auto text-center border-b lg:border-0 border-gray-100 dark:border-gray-700">
+          <a routerLink="./" fragment="ourSuccess" (click)="navbarSticky.classList.add('hidden')"
+            class="block py-4 lg:py-0 text-gray-700 dark:text-gray-300 hover:text-[#6556F0] dark:hover:text-[#6556F0] text-sm uppercase tracking-wide transition-colors cursor-pointer">
+            Our Success
+            <span class="hidden lg:block absolute bottom-0 left-0 w-0 h-0.5 bg-[#6556F0] transition-all duration-300 group-hover:w-full lg:-bottom-2"></span>
+          </a>
+        </li>
+
+        <li class="group relative w-full lg:w-auto text-center border-b lg:border-0 border-gray-100 dark:border-gray-700">
+          <a routerLink="./" fragment="Explore" (click)="navbarSticky.classList.add('hidden')"
+            class="block py-4 lg:py-0 text-gray-700 dark:text-gray-300 hover:text-[#6556F0] dark:hover:text-[#6556F0] text-sm uppercase tracking-wide transition-colors cursor-pointer">
+            Explore
+            <span class="hidden lg:block absolute bottom-0 left-0 w-0 h-0.5 bg-[#6556F0] transition-all duration-300 group-hover:w-full lg:-bottom-2"></span>
+          </a>
+        </li>
+
+        <li class="group relative w-full lg:w-auto text-center">
+          <a routerLink="./" fragment="Opinions" (click)="navbarSticky.classList.add('hidden')"
+            class="block py-4 lg:py-0 text-gray-700 dark:text-gray-300 hover:text-[#6556F0] dark:hover:text-[#6556F0] text-sm uppercase tracking-wide transition-colors cursor-pointer">
+            Opinions
+            <span class="hidden lg:block absolute bottom-0 left-0 w-0 h-0.5 bg-[#6556F0] transition-all duration-300 group-hover:w-full lg:-bottom-2"></span>
+          </a>
+        </li>
+
+        <li class="group relative w-full lg:w-auto text-center border-b lg:border-0 border-gray-100 dark:border-gray-700">
+  <a routerLink="./" fragment="contact" (click)="navbarSticky.classList.add('hidden')"
+    class="block py-4 lg:py-0 text-gray-700 dark:text-gray-300 hover:text-[#6556F0] dark:hover:text-[#6556F0] text-sm uppercase tracking-wide transition-colors cursor-pointer">
+    Contact Us
+    <span class="hidden lg:block absolute bottom-0 left-0 w-0 h-0.5 bg-[#6556F0] transition-all duration-300 group-hover:w-full lg:-bottom-2"></span>
+  </a>
+</li>
+
+        <li class="w-full lg:hidden py-6 px-4 bg-white dark:bg-gray-900">
+          <div class="flex flex-col space-y-3">
+            <button routerLink="/auth/login" (click)="navbarSticky.classList.add('hidden')"
+              class="w-full cursor-pointer py-2.5 text-sm font-semibold text-black dark:text-white bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md">
+              Login
+            </button>
+            <button routerLink="/auth/register" (click)="navbarSticky.classList.add('hidden')"
+              class="w-full cursor-pointer py-2.5 text-sm font-semibold text-white bg-[#6556F0] rounded-md">
+              Sign Up
+            </button>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</nav>

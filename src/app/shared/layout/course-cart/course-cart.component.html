@@ -1,0 +1,49 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
+
+  @for (item of courses(); track item.id) {
+    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+
+      <div class="relative h-48 w-full bg-gray-100 dark:bg-gray-700">
+        @if (item.thumbnailUrl) {
+          <img
+            [src]="getImage(item.thumbnailUrl)"
+            [alt]="item.title"
+            class="absolute inset-0 w-full h-full object-cover"
+          />
+        } @else {
+          <div class="flex items-center justify-center h-full text-gray-400 dark:text-gray-500">
+            No Image Available
+          </div>
+        }
+      </div>
+
+      <div class="p-4">
+        <h3 class="text-lg font-bold text-gray-800 dark:text-white truncate">{{ item.title }}</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Instructor: {{ item.instructorName }}</p>
+
+        <div class="mt-4 flex items-center justify-between">
+          <div class="flex flex-col">
+            @if (item.price === 0) {
+              <span class="text-xl font-bold text-green-500">Free</span>
+            } @else {
+              <span class="text-xl font-bold text-blue-600">{{ item.price }} $</span>
+              @if (item.discountPrice && item.discountPrice < item.price) {
+                <span class="text-xs text-gray-400 dark:text-gray-500 line-through">{{ item.discountPrice }} $</span>
+              }
+            }
+          </div>
+
+          <span class="px-2 py-1 text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded">
+            {{ item.level }}
+          </span>
+        </div>
+      </div>
+
+    </div>
+  } @empty {
+    <div class="col-span-full flex flex-col items-center py-20 text-gray-400 dark:text-gray-500">
+      <p class="text-xl font-medium">No courses found at the moment.</p>
+    </div>
+  }
+
+</div>

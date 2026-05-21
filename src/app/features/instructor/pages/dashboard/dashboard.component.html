@@ -1,0 +1,332 @@
+<!-- ── Skeleton ──────────────────────────────────────────────── -->
+@if (!summary()) {
+  <div class="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+      @for (i of [1,2,3,4]; track i) {
+        <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm animate-pulse">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3 mb-3"></div>
+              <div class="h-7 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"></div>
+              <div class="h-2.5 bg-gray-200 dark:bg-gray-700 rounded w-3/5"></div>
+            </div>
+            <div class="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-xl ml-3 flex-shrink-0"></div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700 flex gap-3">
+            <div class="h-2.5 bg-gray-200 dark:bg-gray-700 rounded w-2/5"></div>
+            <div class="h-2.5 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <div class="xl:col-span-2 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 animate-pulse">
+        <div class="flex justify-between items-end mb-6 flex-wrap gap-3">
+          <div>
+            <div class="h-5 bg-gray-200 dark:bg-gray-700 rounded w-48 mb-2"></div>
+            <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
+          </div>
+          <div class="h-9 bg-gray-200 dark:bg-gray-700 rounded-lg w-28"></div>
+        </div>
+        <div class="flex items-end gap-2 h-72">
+          @for (h of [55,40,70,50,85,60,45,75,90,65,80,55]; track $index) {
+            <div class="flex-1 bg-gray-200 dark:bg-gray-700 rounded-t" [style.height.%]="h"></div>
+          }
+        </div>
+      </div>
+      <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 animate-pulse flex flex-col items-center justify-center gap-4">
+        <div class="h-5 bg-gray-200 dark:bg-gray-700 rounded w-40 mb-2"></div>
+        <div class="w-48 h-48 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+        <div class="flex gap-4 mt-2">
+          <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
+          <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-12"></div>
+          <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-14"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (summary(); as s) {
+<div class="p-6 bg-gray-50 dark:bg-gray-900 min-h-screen text-gray-900 dark:text-white">
+
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+
+    <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+      <div class="flex justify-between items-start">
+        <div>
+          <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Courses</p>
+          <h3 class="text-3xl font-bold mt-1 text-gray-800 dark:text-white">{{ s.totalCourses }}</h3>
+          <p class="text-indigo-600 dark:text-indigo-400 text-xs mt-1 font-semibold">
+            {{ s.publishedCourses }} published
+          </p>
+        </div>
+        <div class="p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl text-indigo-600 dark:text-indigo-400">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z"/>
+            <path d="M3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="mt-4 flex gap-3 text-xs text-gray-400 dark:text-gray-500 border-t border-gray-100 dark:border-gray-700 pt-3">
+        <span>✅ Published: <b class="text-green-600 dark:text-green-400">{{ s.publishedCourses }}</b></span>
+        <span>📝 Draft: <b class="text-indigo-600 dark:text-indigo-400">{{ s.draftCourses }}</b></span>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+      <div class="flex justify-between items-start">
+        <div>
+          <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Students</p>
+          <h3 class="text-3xl font-bold mt-1 text-gray-800 dark:text-white">{{ s.totalStudents }}</h3>
+          <p class="text-green-600 dark:text-green-400 text-xs mt-1 font-semibold">
+            +{{ s.newStudentsThisMonth }} this month
+          </p>
+        </div>
+        <div class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-xl text-blue-600 dark:text-blue-400">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="mt-4 flex gap-3 text-xs text-gray-400 dark:text-gray-500 border-t border-gray-100 dark:border-gray-700 pt-3">
+        <span>👨‍🎓 New this month: <b class="text-blue-600 dark:text-blue-400">{{ s.newStudentsThisMonth }}</b></span>
+      </div>
+    </div>
+
+    <!-- Total Revenue -->
+    <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+      <div class="flex justify-between items-start">
+        <div>
+          <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Total Revenue</p>
+          <h3 class="text-3xl font-bold mt-1 text-gray-800 dark:text-white">${{ s.totalRevenue | number }}</h3>
+          <p class="text-xs mt-1 font-bold" [ngClass]="getGrowthClass(s.revenueGrowthPercent)">
+            {{ getGrowthArrow(s.revenueGrowthPercent) }} {{ s.revenueGrowthPercent }}%
+          </p>
+        </div>
+        <div class="p-3 bg-green-50 dark:bg-green-900/30 rounded-xl text-green-600 dark:text-green-400">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/>
+            <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+      </div>
+      <div class="mt-4 flex gap-3 text-xs text-gray-400 dark:text-gray-500 border-t border-gray-100 dark:border-gray-700 pt-3">
+        <span>📅 This month: <b class="text-green-600 dark:text-green-400">${{ s.revenueThisMonth | number }}</b></span>
+        <span>📆 Last month: <b class="text-gray-600 dark:text-gray-300">${{ s.revenueLastMonth | number }}</b></span>
+      </div>
+    </div>
+
+    <!-- Rating -->
+    <div class="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm">
+      <div class="flex justify-between items-start">
+        <div>
+          <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Avg. Rating</p>
+          <h3 class="text-3xl font-bold mt-1 text-gray-800 dark:text-white">{{ s.averageRating }}</h3>
+          <p class="text-yellow-500 text-xs mt-1 font-semibold">⭐ out of 5.0</p>
+        </div>
+        <div class="p-3 bg-yellow-50 dark:bg-yellow-900/30 rounded-xl text-yellow-500 dark:text-yellow-400">
+          <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+          </svg>
+        </div>
+      </div>
+      <div class="mt-4 flex gap-3 text-xs text-gray-400 dark:text-gray-500 border-t border-gray-100 dark:border-gray-700 pt-3">
+        <span>💬 Reviews: <b class="text-gray-600 dark:text-gray-300">{{ s.totalReviews }}</b></span>
+        <span>⏳ Pending: <b class="text-yellow-600 dark:text-yellow-400">{{ s.pendingCourses }}</b></span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+
+    <div class="xl:col-span-2 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
+      <div class="flex justify-between items-start mb-6 flex-wrap gap-3">
+        <div>
+          <h4 class="text-xl font-bold text-gray-800 dark:text-white">Revenue &amp; Enrollments</h4>
+          <p class="text-sm text-gray-400 dark:text-gray-500 mt-0.5">
+            This month:
+            <span class="text-indigo-600 dark:text-indigo-400 font-bold">${{ s.revenueThisMonth | number }}</span>
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <label class="text-sm text-gray-500 dark:text-gray-400 font-medium">Period:</label>
+          <select
+            [(ngModel)]="selectedMonths"
+            (ngModelChange)="onMonthsChange()"
+            class="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2
+                   text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700
+                   focus:outline-none focus:ring-2 focus:ring-indigo-400 cursor-pointer">
+            @for (m of monthsOptions; track m) {
+              <option [value]="m">{{ m }} Months</option>
+            }
+          </select>
+        </div>
+        @if (revenueData(); as r) {
+          <div class="text-right">
+            <p class="text-xs text-gray-400 dark:text-gray-500 uppercase font-bold tracking-wider">Best Month</p>
+            <p class="text-lg font-black text-gray-800 dark:text-white">
+              ${{ r.bestMonthRevenue | number }}
+              <span class="text-xs text-gray-500 dark:text-gray-400 font-normal">({{ r.bestMonth }})</span>
+            </p>
+          </div>
+        }
+      </div>
+
+      <div #revenueChartEl class="w-full min-h-[320px]"></div>
+
+      <div class="flex justify-between items-center mt-6 pt-6 border-t border-gray-100 dark:border-gray-700">
+        @if (revenueData(); as r) {
+          <p class="text-gray-400 dark:text-gray-500 text-sm italic">
+            Avg / month: <b class="text-gray-600 dark:text-gray-300">${{ r.averagePerMonth | number:'1.0-0' }}</b>
+          </p>
+        }
+        <button class="text-indigo-600 dark:text-indigo-400 text-sm font-bold hover:bg-indigo-50 dark:hover:bg-indigo-900/30 px-4 py-2 rounded-lg transition uppercase tracking-wider">
+          Revenue Report →
+        </button>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 flex flex-col">
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <h5 class="text-lg font-semibold text-gray-800 dark:text-white">Courses Status</h5>
+          <p class="text-sm text-gray-400 dark:text-gray-500">Published vs Draft</p>
+        </div>
+        <div class="relative">
+          <button
+            id="courseDonutDropBtn"
+            data-dropdown-toggle="courseDonutDrop"
+            type="button"
+            class="inline-flex items-center justify-center text-gray-500 dark:text-gray-400
+                   bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600
+                   focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700
+                   rounded-lg text-sm w-9 h-9 focus:outline-none
+                   border border-gray-200 dark:border-gray-600">
+            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-width="3" d="M6 12h.01m6 0h.01m5.99 0h.01"/>
+            </svg>
+          </button>
+          <div id="courseDonutDrop" class="z-10 hidden bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl shadow-lg w-40">
+            <ul class="p-2 text-sm text-gray-600 dark:text-gray-300 font-medium">
+              <li><a href="#" class="flex items-center w-full p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg">Download PNG</a></li>
+              <li><a href="#" class="flex items-center w-full p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg">View Report</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div #donutChartEl class="w-full flex-1 min-h-[220px]"></div>
+
+      <div class="mt-4 space-y-3 border-t border-gray-100 dark:border-gray-700 pt-4">
+        <div>
+          <div class="flex justify-between text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+            <span>✅ Published</span>
+            <span>{{ s.publishedCourses }} ({{ publishedPct() }}%)</span>
+          </div>
+          <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2">
+            <div class="bg-green-500 h-2 rounded-full transition-all duration-700" [style.width.%]="publishedPct()"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+            <span>📝 Draft</span>
+            <span>{{ s.draftCourses }} ({{ draftPct() }}%)</span>
+          </div>
+          <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2">
+            <div class="bg-indigo-500 h-2 rounded-full transition-all duration-700" [style.width.%]="draftPct()"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex justify-between text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+            <span>⏳ Pending</span>
+            <span>{{ s.pendingCourses }} ({{ pendingPct() }}%)</span>
+          </div>
+          <div class="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-2">
+            <div class="bg-yellow-400 h-2 rounded-full transition-all duration-700" [style.width.%]="pendingPct()"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6">
+    <div class="flex justify-between items-center mb-5 flex-wrap gap-3">
+      <h4 class="text-xl font-bold text-gray-800 dark:text-white">Top Courses</h4>
+      <div class="flex items-center gap-2">
+        <label class="text-sm text-gray-500 dark:text-gray-400 font-medium">Sort by:</label>
+        <select
+          [(ngModel)]="topSortBy"
+          (ngModelChange)="onSortChange()"
+          class="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2
+                 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700
+                 focus:outline-none focus:ring-2 focus:ring-indigo-400 cursor-pointer">
+          <option value="enrollments">Enrollments</option>
+          <option value="revenue">Revenue</option>
+          <option value="rating">Rating</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm text-left text-gray-600 dark:text-gray-400">
+        <thead class="text-xs text-gray-400 dark:text-gray-500 uppercase border-b border-gray-100 dark:border-gray-700">
+          <tr>
+            <th class="pb-3 pr-4 font-semibold">Course</th>
+            <th class="pb-3 px-4 font-semibold text-center">Status</th>
+            <th class="pb-3 px-4 font-semibold text-right">Enrollments</th>
+            <th class="pb-3 px-4 font-semibold text-right">Revenue</th>
+            <th class="pb-3 pl-4 font-semibold text-right">Rating</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50 dark:divide-gray-700">
+          @for (course of topCourses(); track trackByCourseId($index, course)) {
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+              <td class="py-3 pr-4">
+                <div class="flex items-center gap-3">
+                  @if (course.thumbnailUrl) {
+                    <img
+                      [src]="getThumbnailUrl(course.thumbnailUrl)"
+                      [alt]="course.title"
+                      class="w-10 h-10 rounded-lg object-cover flex-shrink-0"/>
+                  } @else {
+                    <div class="w-10 h-10 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center flex-shrink-0">
+                      <svg class="w-5 h-5 text-indigo-500 dark:text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84l7 3a1 1 0 00.788 0l7-3a1 1 0 000-1.84l-7-3z"/>
+                      </svg>
+                    </div>
+                  }
+                  <span class="font-medium text-gray-800 dark:text-white line-clamp-1">{{ course.title }}</span>
+                </div>
+              </td>
+              <td class="py-3 px-4 text-center">
+                <span
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                  [ngClass]="statusBadgeClass(course.status)">
+                  {{ course.status | titlecase }}
+                </span>
+              </td>
+              <td class="py-3 px-4 text-right font-semibold text-gray-700 dark:text-gray-300">
+                {{ course.enrollments | number }}
+              </td>
+              <td class="py-3 px-4 text-right font-semibold text-green-600 dark:text-green-400">
+                ${{ course.revenue | number }}
+              </td>
+              <td class="py-3 pl-4 text-right">
+                <span class="font-semibold text-gray-700 dark:text-gray-300">{{ course.rating }}</span>
+                <span class="text-yellow-400 ml-1">⭐</span>
+                <span class="text-gray-400 dark:text-gray-500 text-xs ml-1">({{ course.reviews }})</span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+}

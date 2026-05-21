@@ -1,0 +1,42 @@
+<div class="border-t border-gray-100 dark:border-gray-700 divide-y divide-gray-50 dark:divide-gray-700/50">
+
+  @for (lesson of section.lessons; track lesson.id; let li = $index) {
+    <app-lesson-item
+      [lesson]="lesson"
+      [sectionId]="section.id"
+      [index]="li"
+      [isEditing]="editingLessonId === lesson.id"
+      [isSaving]="isSavingLesson"
+      [editInitialData]="editInitialData"
+      [draggedIndex]="draggedLessonIndex"
+      [draggedSectionId]="draggedLessonSectionId"
+      [dragOverIndex]="dragOverLessonIndex"
+      (dragStart)="lessonDragStart.emit({ sectionId: section.id, index: li })"
+      (dragOver)="lessonDragOver.emit({ event: $event, index: li })"
+      (dragLeave)="lessonDragLeave.emit()"
+      (drop)="lessonDrop.emit({ sectionId: section.id, index: li })"
+      (dragEnd)="lessonDragEnd.emit()"
+      (editStart)="editStart.emit({ sectionId: section.id, lesson: lesson })"
+      (editSave)="editSave.emit({ sectionId: section.id, lessonId: lesson.id, body: $event })"
+      (editCancel)="editCancel.emit()"
+      (deletLesson)="deleteLesson.emit({ sectionId: section.id, lesson: lesson })"
+      (togglePreview)="togglePreview.emit({ sectionId: section.id, lesson: lesson })"
+      (watchVideo)="watchVideo.emit(lesson)"/>
+  }
+
+  @if (addingLessonToSectionId === section.id) {
+    <app-lesson-form
+      mode="add"
+      [isSaving]="isSavingLesson"
+      (save)="addLesson.emit({ sectionId: section.id, body: $event })"
+      (cancel)="cancelAddLesson.emit()"/>
+  }
+
+  @if (section.lessons.length === 0 && addingLessonToSectionId !== section.id) {
+    <div class="px-4 py-6 text-center text-sm text-gray-400 italic">
+      No lessons yet.
+      <button (click)="startAddLesson.emit(section.id)" class="text-blue-500 hover:underline cursor-pointer ml-1">Add one?</button>
+    </div>
+  }
+
+</div>

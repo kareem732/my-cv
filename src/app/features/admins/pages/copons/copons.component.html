@@ -1,0 +1,334 @@
+<div class="p-6 w-full">
+
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Coupons</h1>
+    <button (click)="openCreate()"
+      class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition cursor-pointer">
+      + Add Coupon
+    </button>
+  </div>
+
+  @if (error()) {
+    <div class="bg-red-100 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm flex items-center justify-between">
+      <span>{{ error() }}</span>
+      <button (click)="error.set(null)" class="ml-4 text-red-400 hover:text-red-600 text-lg leading-none cursor-pointer">&times;</button>
+    </div>
+  }
+
+  @if (isLoading()) {
+    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm overflow-x-auto">
+      <table class="w-full text-sm min-w-[700px]">
+        <thead class="bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-xs uppercase">
+          <tr>
+            <th class="px-4 py-3 text-left">Code</th>
+            <th class="px-4 py-3 text-left">Type</th>
+            <th class="px-4 py-3 text-left">Value</th>
+            <th class="px-4 py-3 text-left">Usage</th>
+            <th class="px-4 py-3 text-left">Expires</th>
+            <th class="px-4 py-3 text-left">Status</th>
+            <th class="px-4 py-3 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+          @for (i of [1,2,3,4,5]; track i) {
+            <tr class="animate-pulse">
+              <td class="px-4 py-3"><div class="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded"></div></td>
+              <td class="px-4 py-3"><div class="h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded"></div></td>
+              <td class="px-4 py-3"><div class="h-4 w-10 bg-gray-200 dark:bg-gray-700 rounded"></div></td>
+              <td class="px-4 py-3"><div class="h-4 w-14 bg-gray-200 dark:bg-gray-700 rounded"></div></td>
+              <td class="px-4 py-3"><div class="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded"></div></td>
+              <td class="px-4 py-3"><div class="h-6 w-16 bg-gray-200 dark:bg-gray-700 rounded-full"></div></td>
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-2">
+                  <div class="h-5 w-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                  <div class="h-7 w-12 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+                  <div class="h-7 w-14 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  @if (!isLoading()) {
+    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm overflow-x-auto">
+      <table class="w-full text-sm min-w-[700px]">
+        <thead class="bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-xs uppercase">
+          <tr>
+            <th class="px-4 py-3 text-left">Code</th>
+            <th class="px-4 py-3 text-left">Type</th>
+            <th class="px-4 py-3 text-left">Value</th>
+            <th class="px-4 py-3 text-left">Usage</th>
+            <th class="px-4 py-3 text-left">Expires</th>
+            <th class="px-4 py-3 text-left">Status</th>
+            <th class="px-4 py-3 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+          @for (coupon of coupons(); track coupon.id) {
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+              <td class="px-4 py-3 font-medium text-gray-800 dark:text-white whitespace-nowrap">{{ coupon.code }}</td>
+              <td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">{{ coupon.discountType }}</td>
+              <td class="px-4 py-3 text-gray-700 dark:text-gray-300">{{ coupon.discountValue }}</td>
+              <td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">{{ coupon.usedCount }} / {{ coupon.usageLimit }}</td>
+              <td class="px-4 py-3 text-gray-500 dark:text-gray-400 whitespace-nowrap">{{ coupon.expiresAt | date:'mediumDate' }}</td>
+
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center justify-center w-[72px] text-xs px-2.5 py-1 rounded-full font-medium"
+                  [ngClass]="coupon.isActive && !coupon.isExpired
+                    ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
+                    : coupon.isExpired
+                      ? 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
+                      : 'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-300'">
+                  {{ coupon.isExpired ? 'Expired' : coupon.isActive ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-2 whitespace-nowrap">
+                  <button type="button" (click)="toggle(coupon.id)"
+                    class="relative inline-flex shrink-0 w-10 h-5 rounded-full transition-colors duration-200 cursor-pointer"
+                    [ngClass]="coupon.isActive ? 'bg-blue-600' : 'bg-gray-300'">
+                    <span class="inline-block w-3.5 h-3.5 bg-white rounded-full shadow transform transition-transform duration-200 mt-[3px]"
+                      [ngClass]="coupon.isActive ? 'translate-x-5' : 'translate-x-[3px]'">
+                    </span>
+                  </button>
+                  <button (click)="openEdit(coupon)"
+                    class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-600 px-2.5 py-1.5 rounded-lg transition cursor-pointer">
+                    Edit
+                  </button>
+                  <button (click)="confirmDelete(coupon.id)"
+                    class="text-xs bg-red-50 hover:bg-red-100 text-red-600 px-2.5 py-1.5 rounded-lg transition cursor-pointer">
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+@if (showModal()) {
+  <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 px-4">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md p-6">
+
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+          [ngClass]="isEditing() ? 'bg-yellow-100' : 'bg-blue-100'">
+          @if (isEditing()) {
+            <svg class="w-5 h-5 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
+          } @else {
+            <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+            </svg>
+          }
+        </div>
+        <div>
+          <h3 class="text-base font-semibold text-gray-900 dark:text-white">
+            {{ isEditing() ? 'Edit Coupon' : 'New Coupon' }}
+          </h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            {{ isEditing() ? 'Update the coupon details below' : 'Fill in the details to create a new coupon' }}
+          </p>
+        </div>
+      </div>
+
+      @if (error()) {
+        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-3 py-2 rounded-lg mb-4 text-xs flex items-center gap-2">
+          <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          {{ error() }}
+        </div>
+      }
+
+      <div class="space-y-4">
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 cursor-default">
+            Code <span class="text-red-500">*</span>
+          </label>
+          <input
+            [value]="form().code"
+            (input)="updateForm('code', $any($event.target).value)"
+            (blur)="touch('code')"
+            placeholder="e.g. SUMMER20"
+            class="w-full px-3 py-2 text-sm rounded-lg border focus:outline-none focus:ring-2 transition-all cursor-text"
+            [ngClass]="touched().code && form().code.trim().length === 0
+              ? 'border-red-400 bg-red-50 dark:bg-red-900/10 focus:ring-red-400 text-gray-900 dark:text-white'
+              : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:ring-blue-500 focus:border-blue-500 text-gray-900 dark:text-white'"/>
+          @if (touched().code && form().code.trim().length === 0) {
+            <p class="text-xs text-red-500 mt-1 flex items-center gap-1">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              Coupon code is required.
+            </p>
+          }
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 cursor-default">
+            Discount Type <span class="text-red-500">*</span>
+          </label>
+          <select
+            [value]="form().discountType"
+            (change)="updateForm('discountType', +$any($event.target).value)"
+            (blur)="touch('discountType')"
+            class="w-full px-3 py-2 text-sm rounded-lg border focus:outline-none focus:ring-2 transition-all cursor-pointer"
+            [ngClass]="touched().discountType && form().discountType <= 0
+              ? 'border-red-400 bg-red-50 dark:bg-red-900/10 focus:ring-red-400 text-gray-400'
+              : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:ring-blue-500 focus:border-blue-500 text-gray-900 dark:text-white'">
+            <option value="0" disabled hidden>Select discount type</option>
+            <option value="1">Percentage (%)</option>
+            <option value="2">Fixed Amount</option>
+          </select>
+          @if (touched().discountType && form().discountType <= 0) {
+            <p class="text-xs text-red-500 mt-1 flex items-center gap-1">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              Please select a discount type.
+            </p>
+          }
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 cursor-default">
+            Discount Value <span class="text-red-500">*</span>
+          </label>
+          <input
+            [value]="form().discountValue || ''"
+            (input)="updateForm('discountValue', +$any($event.target).value)"
+            (blur)="touch('discountValue')"
+            type="number" min="0"
+            placeholder="e.g. 20"
+            class="w-full px-3 py-2 text-sm rounded-lg border focus:outline-none focus:ring-2 transition-all cursor-text"
+            [ngClass]="touched().discountValue && form().discountValue <= 0
+              ? 'border-red-400 bg-red-50 dark:bg-red-900/10 focus:ring-red-400 text-gray-900 dark:text-white'
+              : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:ring-blue-500 focus:border-blue-500 text-gray-900 dark:text-white'"/>
+          @if (touched().discountValue && form().discountValue <= 0) {
+            <p class="text-xs text-red-500 mt-1 flex items-center gap-1">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              Discount value must be greater than 0.
+            </p>
+          }
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 cursor-default">
+            Usage Limit <span class="text-red-500">*</span>
+          </label>
+          <input
+            [value]="form().usageLimit || ''"
+            (input)="updateForm('usageLimit', +$any($event.target).value)"
+            (blur)="touch('usageLimit')"
+            type="number" min="0"
+            placeholder="e.g. 100"
+            class="w-full px-3 py-2 text-sm rounded-lg border focus:outline-none focus:ring-2 transition-all cursor-text"
+            [ngClass]="touched().usageLimit && form().usageLimit <= 0
+              ? 'border-red-400 bg-red-50 dark:bg-red-900/10 focus:ring-red-400 text-gray-900 dark:text-white'
+              : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:ring-blue-500 focus:border-blue-500 text-gray-900 dark:text-white'"/>
+          @if (touched().usageLimit && form().usageLimit <= 0) {
+            <p class="text-xs text-red-500 mt-1 flex items-center gap-1">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              Usage limit must be greater than 0.
+            </p>
+          }
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 cursor-default">
+            Expiry Date <span class="text-red-500">*</span>
+          </label>
+          <input
+            [value]="form().expiresAt"
+            (input)="updateForm('expiresAt', $any($event.target).value)"
+            (blur)="touch('expiresAt')"
+            type="datetime-local"
+            class="w-full px-3 py-2 text-sm rounded-lg border focus:outline-none focus:ring-2 transition-all cursor-text"
+            [ngClass]="touched().expiresAt && form().expiresAt.length === 0
+              ? 'border-red-400 bg-red-50 dark:bg-red-900/10 focus:ring-red-400 text-gray-900 dark:text-white'
+              : 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:ring-blue-500 focus:border-blue-500 text-gray-900 dark:text-white'"/>
+          @if (touched().expiresAt && form().expiresAt.length === 0) {
+            <p class="text-xs text-red-500 mt-1 flex items-center gap-1">
+              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              Expiry date is required.
+            </p>
+          }
+        </div>
+
+      </div>
+
+      <div class="flex gap-3 mt-5">
+        <button (click)="closeModal()"
+          class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+          Cancel
+        </button>
+        <button (click)="submit()"
+          [disabled]="submitLoading()"
+          class="flex-1 px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          [ngClass]="isEditing() ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-blue-600 hover:bg-blue-700'">
+          @if (submitLoading()) {
+            <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+            </svg>
+          }
+          {{ submitLoading() ? 'Saving...' : isEditing() ? 'Update' : 'Create' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+}
+
+@if (showDeleteModal()) {
+  <div class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 px-4">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-sm p-6">
+
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+          <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-base font-semibold text-gray-900 dark:text-white">Delete Coupon</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">This action cannot be undone.</p>
+        </div>
+      </div>
+
+      <div class="flex gap-3 mt-5">
+        <button (click)="closeDeleteModal()" [disabled]="deleteLoading()"
+          class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors cursor-pointer disabled:opacity-50">
+          Cancel
+        </button>
+        <button (click)="executeDelete()" [disabled]="deleteLoading()"
+          class="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+          @if (deleteLoading()) {
+            <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
+            </svg>
+          }
+          {{ deleteLoading() ? 'Deleting...' : 'Delete' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

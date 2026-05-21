@@ -1,0 +1,149 @@
+<div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 space-y-6">
+
+  <h2 class="text-lg font-bold text-gray-900 dark:text-white">Reviews</h2>
+
+  <!-- Summary -->
+  @if (summary()) {
+    <div class="flex items-center gap-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+      <div class="text-center">
+        <p class="text-4xl font-black text-gray-900 dark:text-white">{{ summary()!.averageRating.toFixed(1) }}</p>
+        <div class="flex justify-center mt-1">
+          @for (s of [1,2,3,4,5]; track s) {
+            <span [class]="s <= summary()!.averageRating ? 'text-yellow-400' : 'text-gray-200 dark:text-gray-600'" class="text-lg">★</span>
+          }
+        </div>
+        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">{{ summary()!.totalRatings }} ratings</p>
+      </div>
+      <div class="flex-1 space-y-1.5">
+        @for (bar of [
+          { label: '5 ★', percent: summary()!.fiveStarsPercent  },
+          { label: '4 ★', percent: summary()!.fourStarsPercent  },
+          { label: '3 ★', percent: summary()!.threeStarsPercent },
+          { label: '2 ★', percent: summary()!.twoStarsPercent   },
+          { label: '1 ★', percent: summary()!.oneStarPercent    }
+        ]; track bar.label) {
+          <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+            <span class="w-8 text-right">{{ bar.label }}</span>
+            <div class="flex-1 bg-gray-200 dark:bg-gray-600 rounded-full h-1.5 overflow-hidden">
+              <div class="h-1.5 bg-yellow-400 rounded-full" [style.width.%]="bar.percent"></div>
+            </div>
+            <span class="w-8">{{ bar.percent }}%</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- My Review Form -->
+  @if (!myReview() || isEditing()) {
+    <div class="border border-gray-100 dark:border-gray-700 rounded-xl p-4 space-y-3">
+      <p class="text-sm font-semibold text-gray-700 dark:text-gray-300">
+        {{ myReview() ? 'Edit Your Review' : 'Write a Review' }}
+      </p>
+
+      <!-- Stars -->
+      <div class="flex gap-1">
+        @for (s of [1,2,3,4,5]; track s) {
+          <button
+            (click)="setRating(s)"
+            (mouseenter)="setHovered(s)"
+            (mouseleave)="setHovered(0)"
+            class="text-2xl transition-colors">
+            <span [class]="s <= (hovered || rating) ? 'text-yellow-400' : 'text-gray-200 dark:text-gray-600'">★</span>
+          </button>
+        }
+      </div>
+
+      <!-- Comment -->
+      <textarea
+        [(ngModel)]="comment"
+        rows="3"
+        placeholder="Share your experience..."
+        class="w-full border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-3 text-sm text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none transition-all">
+      </textarea>
+
+      @if (submitError()) {
+        <p class="text-xs text-red-500 flex items-center gap-1">{{ submitError() }}</p>
+      }
+
+      <div class="flex gap-2 justify-end">
+        @if (isEditing()) {
+          <button
+            (click)="cancelEdit()"
+            class="px-4 py-2 text-sm text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-600 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            Cancel
+          </button>
+        }
+        <button
+          (click)="submitReview()"
+          [disabled]="isSubmitting() || !rating || !comment.trim()"
+          class="px-5 py-2 cursor-pointer text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+          @if (isSubmitting()) { Saving... } @else { {{ myReview() ? 'Update' : 'Submit' }} }
+        </button>
+      </div>
+    </div>
+  } @else {
+    <!-- My Review Display -->
+    <div class="border border-blue-100 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 space-y-2">
+      <div class="flex items-center justify-between">
+        <p class="text-sm font-semibold text-blue-700 dark:text-blue-400">Your Review</p>
+        <div class="flex gap-2">
+          <button (click)="startEdit()" class="text-xs text-blue-500 hover:underline">Edit</button>
+          <button
+            (click)="deleteReview()"
+            [disabled]="isDeleting()"
+            class="text-xs text-red-400 hover:underline disabled:opacity-40">
+            {{ isDeleting() ? 'Deleting...' : 'Delete' }}
+          </button>
+        </div>
+      </div>
+      <div class="flex">
+        @for (s of [1,2,3,4,5]; track s) {
+          <span [class]="s <= myReview()!.rating ? 'text-yellow-400' : 'text-gray-200 dark:text-gray-600'" class="text-sm">★</span>
+        }
+      </div>
+      <p class="text-sm text-gray-700 dark:text-gray-300">{{ myReview()!.comment }}</p>
+      <p class="text-xs text-gray-400 dark:text-gray-500">{{ formatDate(myReview()!.createdAt) }}</p>
+    </div>
+  }
+
+  <!-- All Reviews -->
+  @if (isLoading()) {
+    <div class="space-y-3">
+      @for (s of [1,2,3]; track s) {
+        <div class="animate-pulse space-y-2 p-4 border border-gray-100 dark:border-gray-700 rounded-xl">
+          <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
+          <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+          <div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+        </div>
+      }
+    </div>
+  } @else if (reviews().length === 0) {
+    <p class="text-sm text-gray-400 dark:text-gray-500 text-center py-6">No reviews yet. Be the first!</p>
+  } @else {
+    <div class="space-y-4">
+      @for (review of reviews(); track review.id) {
+        @if (review.studentId !== myReview()?.studentId) {
+          <div class="border border-gray-100 dark:border-gray-700 rounded-xl p-4 space-y-2">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm shrink-0">
+                {{ review.studentName.charAt(0).toUpperCase() }}
+              </div>
+              <div>
+                <p class="text-sm font-semibold text-gray-800 dark:text-white">{{ review.studentName }}</p>
+                <p class="text-xs text-gray-400 dark:text-gray-500">{{ formatDate(review.createdAt) }}</p>
+              </div>
+            </div>
+            <div class="flex">
+              @for (s of [1,2,3,4,5]; track s) {
+                <span [class]="s <= review.rating ? 'text-yellow-400' : 'text-gray-200 dark:text-gray-600'" class="text-sm">★</span>
+              }
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300">{{ review.comment }}</p>
+          </div>
+        }
+      }
+    </div>
+  }
+
+</div>

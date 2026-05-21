@@ -1,0 +1,26 @@
+<div class="space-y-4">
+
+  <div class="flex items-center justify-between text-sm">
+    <span class="text-gray-500 dark:text-gray-400">Subtotal</span>
+    <span class="font-medium text-gray-800 dark:text-gray-100">
+      ${{ order().totalPrice | number:'1.2-2' }}
+    </span>
+  </div>
+
+  @if ((order().discountAmount || 0) > 0) {
+    <div class="flex items-center justify-between text-sm">
+      <span class="text-green-600 dark:text-green-400">Coupon Discount</span>
+      <span class="font-semibold text-green-600 dark:text-green-400">
+        -${{ order().discountAmount | number:'1.2-2' }}
+      </span>
+    </div>
+  }
+
+  <div class="border-t border-gray-100 dark:border-gray-700 pt-4 flex items-center justify-between">
+    <span class="text-sm font-semibold text-gray-800 dark:text-gray-100">Total</span>
+    <span class="text-2xl font-bold text-gray-900 dark:text-white">
+      ${{ order().finalPrice | number:'1.2-2' }}
+    </span>
+  </div>
+
+</div>

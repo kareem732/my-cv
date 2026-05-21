@@ -1,0 +1,135 @@
+<footer  id="contact" class="bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-700 pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 pb-14">
+
+      <!-- Brand -->
+      <div class="flex flex-col items-center sm:items-start text-center sm:text-left gap-6">
+        <h3 class="text-slate-900 dark:text-white font-bold text-[17px]">Learn Nova</h3>
+        <div class="w-8 h-0.5 bg-[#4A3ADF] rounded-full mx-auto sm:mx-0"></div>
+        <p class="text-sm leading-7 text-slate-500 dark:text-gray-400 max-w-[260px]">
+          Empowering learners worldwide with accessible, high-quality, and career-focused online education from industry experts.
+        </p>
+        <div class="flex gap-3">
+          @for (s of socialIcons(); track s.label) {
+            <button [title]="s.label"
+              class="w-10 h-10 flex items-center justify-center rounded-full cursor-pointer
+                     bg-slate-100 dark:bg-gray-700 text-slate-500 dark:text-gray-400
+                     hover:bg-[#4A3ADF] hover:text-white
+                     hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#4A3ADF]/25
+                     transition-all duration-200">
+              @if (s.icon === 'globe') {
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                </svg>
+              }
+              @if (s.icon === 'at-sign') {
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/>
+                </svg>
+              }
+              @if (s.icon === 'message-circle') {
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+              }
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="lg:col-span-2 flex flex-col items-center sm:items-start text-center sm:text-left gap-5 w-full">
+        <div class="w-full">
+          <h3 class="text-slate-900 dark:text-white font-bold text-[17px] mb-1">Contact Us</h3>
+          <div class="w-8 h-0.5 bg-[#4A3ADF] rounded-full mb-3 mx-auto sm:mx-0"></div>
+          <p class="text-slate-400 dark:text-gray-500 text-xs">Fill in the form and we'll get back to you.</p>
+        </div>
+
+        @if (form) {
+          <form [formGroup]="form" (ngSubmit)="onSubmit()" class="w-full flex flex-col gap-4">
+
+            <div class="w-full">
+              <input type="text" formControlName="fullName" placeholder="Enter your full name"
+                class="w-full bg-slate-50 dark:bg-gray-800 border-2 rounded-2xl py-4 px-5 text-[15px] text-slate-700 dark:text-gray-200 placeholder-slate-400 dark:placeholder-gray-500 outline-none focus:border-[#4A3ADF] focus:ring-4 focus:ring-[#4A3ADF]/10 transition-all duration-200"
+                [class.border-red-500]="f['fullName'].touched && f['fullName'].invalid"
+                [class.border-slate-200]="!(f['fullName'].touched && f['fullName'].invalid)"/>
+              @if (f['fullName'].touched && f['fullName'].invalid) {
+                @if (f['fullName'].errors?.['required']) { <span class="text-[11px] text-red-500 mt-1 block">Full name is required</span> }
+                @else if (f['fullName'].errors?.['minlength']) { <span class="text-[11px] text-red-500 mt-1 block">Minimum 3 characters required</span> }
+                @else if (f['fullName'].errors?.['pattern']) { <span class="text-[11px] text-red-500 mt-1 block">Only letters are allowed</span> }
+              }
+            </div>
+
+            <div class="w-full">
+              <input type="email" formControlName="email" placeholder="Enter your email"
+                class="w-full bg-slate-50 dark:bg-gray-800 border-2 rounded-2xl py-4 px-5 text-[15px] text-slate-700 dark:text-gray-200 placeholder-slate-400 dark:placeholder-gray-500 outline-none focus:border-[#4A3ADF] focus:ring-4 focus:ring-[#4A3ADF]/10 transition-all duration-200"
+                [class.border-red-500]="f['email'].touched && f['email'].invalid"
+                [class.border-slate-200]="!(f['email'].touched && f['email'].invalid)"/>
+              @if (f['email'].touched && f['email'].invalid) {
+                @if (f['email'].errors?.['required']) { <span class="text-[11px] text-red-500 mt-1 block">Email is required</span> }
+                @else if (f['email'].errors?.['email'] || f['email'].errors?.['pattern']) { <span class="text-[11px] text-red-500 mt-1 block">Please enter a valid email address</span> }
+              }
+            </div>
+
+            <div class="w-full">
+              <input type="text" formControlName="subject" placeholder="Enter subject"
+                class="w-full bg-slate-50 dark:bg-gray-800 border-2 rounded-2xl py-4 px-5 text-[15px] text-slate-700 dark:text-gray-200 placeholder-slate-400 dark:placeholder-gray-500 outline-none focus:border-[#4A3ADF] focus:ring-4 focus:ring-[#4A3ADF]/10 transition-all duration-200"
+                [class.border-red-500]="f['subject'].touched && f['subject'].invalid"
+                [class.border-slate-200]="!(f['subject'].touched && f['subject'].invalid)"/>
+              @if (f['subject'].touched && f['subject'].invalid) {
+                @if (f['subject'].errors?.['required']) { <span class="text-[11px] text-red-500 mt-1 block">Subject is required</span> }
+                @else if (f['subject'].errors?.['minlength']) { <span class="text-[11px] text-red-500 mt-1 block">Subject must be at least 5 characters</span> }
+                @else if (f['subject'].errors?.['maxlength']) { <span class="text-[11px] text-red-500 mt-1 block">Subject is too long (max 100 characters)</span> }
+              }
+            </div>
+
+            <div class="w-full">
+              <textarea rows="4" formControlName="message" placeholder="Write your message..."
+                class="w-full bg-slate-50 dark:bg-gray-800 border-2 rounded-2xl py-4 px-5 text-[15px] text-slate-700 dark:text-gray-200 placeholder-slate-400 dark:placeholder-gray-500 outline-none resize-none focus:border-[#4A3ADF] focus:ring-4 focus:ring-[#4A3ADF]/10 transition-all duration-200"
+                [class.border-red-500]="f['message'].touched && f['message'].invalid"
+                [class.border-slate-200]="!(f['message'].touched && f['message'].invalid)"></textarea>
+              @if (f['message'].touched && f['message'].invalid) {
+                @if (f['message'].errors?.['required']) { <span class="text-[11px] text-red-500 mt-1 block">Message is required</span> }
+                @else if (f['message'].errors?.['minlength']) { <span class="text-[11px] text-red-500 mt-1 block">Message must be at least 10 characters</span> }
+                @else if (f['message'].errors?.['maxlength']) { <span class="text-[11px] text-red-500 mt-1 block">Message is too long (max 500 characters)</span> }
+              }
+            </div>
+
+            @if (isSuccess()) {
+              <div class="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 text-green-600 dark:text-green-400 text-sm rounded-2xl px-4 py-3 font-medium text-left">
+                <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                Message sent successfully!
+              </div>
+            }
+
+            @if (errorMsg()) {
+              <div class="flex items-center gap-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-700 text-red-500 dark:text-red-400 text-sm rounded-2xl px-4 py-3 font-medium text-left">
+                <svg class="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 8v4m0 4h.01"/></svg>
+                {{ errorMsg() }}
+              </div>
+            }
+
+            <button type="submit" [disabled]="isLoading() || form.invalid"
+              class="w-full bg-[#4A3ADF] text-white text-[15px] cursor-pointer font-semibold py-4 px-6 rounded-2xl hover:bg-[#3b2db0] hover:shadow-xl hover:shadow-[#4A3ADF]/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2">
+              @if (isLoading()) {
+                <svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+                Sending...
+              } @else {
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                Send Message
+              }
+            </button>
+
+          </form>
+        }
+      </div>
+    </div>
+
+    <div class="border-t border-gray-100 dark:border-gray-700"></div>
+
+    <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <span class="text-sm text-slate-400 dark:text-gray-500 font-medium order-2 md:order-1">
+        © 2026 EduMaster Inc, All rights reserved.
+      </span>
+    </div>
+  </div>
+</footer>

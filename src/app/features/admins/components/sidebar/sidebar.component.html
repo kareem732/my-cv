@@ -1,0 +1,111 @@
+<aside id="top-bar-sidebar" class="fixed top-0 left-0 z-40 w-64 h-full transition-transform mt-4 -translate-x-full sm:translate-x-0" aria-label="Sidebar">
+
+  <div class="h-full px-3 py-4 overflow-y-auto bg-neutral-primary-soft border-e border-default">
+
+    <ul class="space-y-2 font-medium mt-10">
+
+      <li>
+        <a routerLink="/admin/dashboard" routerLinkActive="bg-neutral-tertiary" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
+          <svg class="w-5 h-5 transition duration-75 group-hover:text-fg-brand" fill="none" viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <span class="ms-3">Dashboard</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/admin/users" routerLinkActive="bg-neutral-tertiary" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
+          <svg class="w-5 h-5 transition duration-75 group-hover:text-fg-brand" fill="none" viewBox="0 0 24 24">
+            <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="2"/>
+            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M3 21v-1a6 6 0 0 1 6-6h0a6 6 0 0 1 6 6v1"/>
+            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M16 3.13a4 4 0 0 1 0 7.75M21 21v-1a4 4 0 0 0-3-3.85"/>
+          </svg>
+          <span class="ms-3">Users</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/admin/courses" routerLinkActive="bg-neutral-tertiary" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
+          <svg class="w-5 h-5 transition duration-75 group-hover:text-fg-brand" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/>
+          </svg>
+          <span class="ms-3">Courses</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/admin/categories" routerLinkActive="bg-neutral-tertiary" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
+          <svg class="w-5 h-5 transition duration-75 group-hover:text-fg-brand" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M3 7a2 2 0 0 1 2-2h4.586a1 1 0 0 1 .707.293l8.414 8.414a2 2 0 0 1 0 2.828l-3.172 3.172a2 2 0 0 1-2.828 0L4.293 13.293A1 1 0 0 1 4 12.586V7z"/>
+            <circle cx="7.5" cy="9.5" r="1" fill="currentColor"/>
+          </svg>
+          <span class="ms-3">Categories</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/admin/copons" routerLinkActive="bg-neutral-tertiary" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
+          <svg class="w-5 h-5 transition duration-75 group-hover:text-fg-brand" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 0 0-2 2v3a2 2 0 0 1 0 4v3a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-3a2 2 0 0 1 0-4V7a2 2 0 0 0-2-2H5z"/>
+          </svg>
+          <span class="ms-3">Copons</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/admin/payout" routerLinkActive="bg-neutral-tertiary" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
+          <svg class="w-6 h-6 transition duration-75 group-hover:text-blue-600 shadow-sm" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill-opacity="0.2"/>
+            <path d="M19 8h-1c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h1c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2zm-1 6v-4h1v4h-1z"/>
+            <path fill-rule="evenodd" d="M3 6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v2h-13a3 3 0 0 0-3 3v9H6a3 3 0 0 1-3-3V6z" clip-rule="evenodd"/>
+          </svg>
+          <span class="ms-3 font-medium">Payouts</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/admin/reviews" routerLinkActive="bg-neutral-tertiary" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
+          <svg class="w-6 h-6 transition-all duration-300 group-hover:scale-110 group-hover:text-yellow-500 shadow-sm" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" fill-opacity="0.15"/>
+            <path d="M12 13.5l-3.53 1.86.67-3.93-2.86-2.78 3.95-.57L12 4.5l1.77 3.58 3.95.57-2.86 2.78.67 3.93L12 13.5z"/>
+          </svg>
+          <span class="ms-3 font-medium">Reviews</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/admin/contact-us" routerLinkActive="bg-neutral-tertiary" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
+          <svg class="w-5 h-5 transition duration-75 group-hover:text-fg-brand" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          <span class="ms-3">Contact Us</span>
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/admin/settings" routerLinkActive="bg-neutral-tertiary" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
+          <svg class="w-5 h-5 transition duration-75 group-hover:text-fg-brand" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <span class="ms-3">Settings</span>
+        </a>
+      </li>
+
+      <li>
+        <button (click)="logoutClicked.emit()" class="w-full text-start flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-red-600 group cursor-pointer">
+          <svg class="w-5 h-5 transition duration-75 group-hover:text-red-600" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1"/>
+          </svg>
+          <span class="ms-3">Logout</span>
+        </button>
+      </li>
+
+    </ul>
+
+  </div>
+
+</aside>

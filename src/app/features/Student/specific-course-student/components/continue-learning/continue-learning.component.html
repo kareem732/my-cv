@@ -1,0 +1,89 @@
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+
+  <!-- Top Bar -->
+  <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4 flex items-center justify-between">
+    <div>
+      @if (isLoading()) {
+        <div class="h-6 w-56 bg-gray-200 dark:bg-gray-700 animate-pulse rounded"></div>
+        <div class="h-4 w-36 bg-gray-100 dark:bg-gray-700 animate-pulse rounded mt-1"></div>
+      } @else {
+        <h1 class="text-xl font-bold text-gray-900 dark:text-white">
+          {{ progress()?.courseTitle ?? curriculum()?.courseTitle ?? 'Course' }}
+        </h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+          {{ progress()?.completedLessons ?? 0 }} of {{ progress()?.totalLessons ?? 0 }} lessons completed
+        </p>
+      }
+    </div>
+
+    <div class="flex items-center gap-4">
+
+      <!-- Progress % -->
+      @if (!isLoading() && progress()) {
+        <div class="flex items-center gap-3">
+          <span class="text-sm font-semibold text-blue-600 dark:text-blue-400">{{ progress()!.progressPercent }}%</span>
+          <div class="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+            <div
+              class="h-2 rounded-full transition-all duration-700"
+              [class]="progress()!.progressPercent === 100 ? 'bg-green-500' : 'bg-blue-500'"
+              [style.width.%]="progress()!.progressPercent">
+            </div>
+          </div>
+        </div>
+      }
+
+    </div>
+  </div>
+
+  <!-- Certificate Error Toast -->
+  @if (certError()) {
+    <div class="max-w-7xl mx-auto mt-4 px-4">
+      <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-xl px-5 py-3 text-sm flex items-center justify-between">
+        <span>{{ certError() }}</span>
+        <button (click)="certError.set(null)" class="text-red-400 hover:text-red-600 ml-4">✕</button>
+      </div>
+    </div>
+  }
+
+  <!-- General Error -->
+  @if (error()) {
+    <div class="max-w-7xl mx-auto mt-6 px-4">
+      <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 rounded-xl px-5 py-4 text-sm">
+        {{ error() }}
+      </div>
+    </div>
+  }
+
+  <!-- Body Grid -->
+  <div class="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+    <!-- Curriculum — 2 cols -->
+    <div class="xl:col-span-2">
+      <app-curriculum
+        [curriculum]="curriculum()"
+        [isLoading]="isLoading()"
+        [courseId]="courseId()"
+        (progressUpdated)="reloadProgress()"
+      />
+    </div>
+
+    <!-- Progress — 1 col -->
+    <div class="xl:col-span-1">
+      <app-progress
+        [progress]="progress()"
+        [isLoading]="isLoading()"
+        [courseId]="courseId()"
+        (lessonCompleted)="reloadProgress()"
+      />
+    </div>
+
+  </div>
+
+  <!-- Reviews -->
+  @if (!isLoading() && courseId()) {
+    <div class="max-w-7xl mx-auto px-4 pb-10">
+      <app-reviews [courseId]="courseId()" />
+    </div>
+  }
+
+</div>
