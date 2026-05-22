@@ -12,6 +12,7 @@ import { LessonFormComponent } from './lesson-form/lesson-form.component';
 export class LessonItemComponent {
   @Input() lesson!: Lesson;
   @Input() sectionId!: number;
+  @Input() courseId!: number;                                    // ✅ added
   @Input() index!: number;
   @Input() isEditing = false;
   @Input() isSaving = false;

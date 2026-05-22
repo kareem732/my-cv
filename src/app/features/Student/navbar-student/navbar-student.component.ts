@@ -1,13 +1,15 @@
-import { Component, inject, OnInit, signal } from "@angular/core";
+import { Component, inject, OnInit, OnDestroy, signal } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { CommonModule } from "@angular/common";
-import { DestroyRef } from "@angular/core";
-import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import { WishlistStateService } from "../../../core/services/WishList/components/wishlist-state.service";
 import { NotificationsService, Notification } from "../../../core/services/notifications/notifications.service";
 import { NavigationEnd } from "@angular/router";
 import { filter } from "rxjs";
 import { ThemeService } from "../../../core/services/Theme/theme.service";
+import { ProfileService } from "../../../core/services/Profile/profile.service";
+
 @Component({
   selector: 'app-navbar-student',
   standalone: true,
@@ -15,48 +17,57 @@ import { ThemeService } from "../../../core/services/Theme/theme.service";
   templateUrl: './navbar-student.component.html',
   styleUrl: './navbar-student.component.css'
 })
-export class NavbarStudentComponent implements OnInit {
-  wishlistState  = inject(WishlistStateService);
-  private notifSvc   = inject(NotificationsService);
-  private destroyRef = inject(DestroyRef);
-  private router     = inject(Router);
-  themeService   = inject(ThemeService); // ← أضف
+export class NavbarStudentComponent implements OnInit, OnDestroy {
+  wishlistState    = inject(WishlistStateService);
+  private notifSvc = inject(NotificationsService);
+  private router   = inject(Router);
+  themeService     = inject(ThemeService);
+  profileService   = inject(ProfileService);
 
-  isMenuOpen       = signal<boolean>(false);
-  isNotifOpen      = signal<boolean>(false);
+  user = this.profileService.currentUser;
+
+  isMenuOpen     = signal<boolean>(false);
+  isNotifOpen    = signal<boolean>(false);
   notifications: Notification[] = [];
-  unreadCount      = 0;
-  isNotifLoading   = false;
-scrollTo(sectionId: string): void {
-  this.closeMenu();
+  unreadCount    = 0;
+  isNotifLoading = false;
 
-  const alreadyOnHome = this.router.url.includes('/student/home');
+  private destroy$ = new Subject<void>();
 
-  if (alreadyOnHome) {
-    const el = document.getElementById(sectionId);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  } else {
-    this.router.events.pipe(
-      filter(e => e instanceof NavigationEnd),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe(() => {
-      setTimeout(() => {
-        const el = document.getElementById(sectionId);
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 50);
-    });
+  private readonly baseUrl = 'https://guidy-api-v03-f8dngzewf7ebehea.austriaeast-01.azurewebsites.net';
 
-    this.router.navigate(['/student/home']);
+  getAvatarUrl(url: string | null | undefined): string {
+    if (!url) return 'images/Person.png';
+    if (url.startsWith('http')) return url;
+    return `${this.baseUrl}${url}`;
   }
-}
+
+  scrollTo(sectionId: string): void {
+    this.closeMenu();
+    const alreadyOnHome = this.router.url.includes('/student/home');
+    if (alreadyOnHome) {
+      const el = document.getElementById(sectionId);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      this.router.events.pipe(
+        filter(e => e instanceof NavigationEnd),
+        takeUntil(this.destroy$)
+      ).subscribe(() => {
+        setTimeout(() => {
+          const el = document.getElementById(sectionId);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
+      });
+      this.router.navigate(['/student/home']);
+    }
+  }
 
   ngOnInit(): void {
     this.wishlistState.load();
     this.loadNotifications();
+    if (!this.user()) {
+      this.profileService.getProfile().subscribe();
+    }
   }
 
   toggleMenu()  { this.isMenuOpen.update(v => !v); }
@@ -69,25 +80,26 @@ scrollTo(sectionId: string): void {
 
   closeNotif() { this.isNotifOpen.set(false); }
 
-
   loadNotifications(): void {
     this.isNotifLoading = true;
-    this.notifSvc.getNotifications(false)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.notifSvc.getNotifications()
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res) => {
           this.notifications = res.notifications;
           this.unreadCount   = res.unreadCount;
           this.isNotifLoading = false;
         },
-        error: () => { this.isNotifLoading = false; }
+        error: (err) => {
+          this.isNotifLoading = false;
+        }
       });
   }
 
   markAsRead(notif: Notification): void {
     if (notif.isRead) return;
     this.notifSvc.markAsRead(notif.id)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           notif.isRead = true;
@@ -98,12 +110,17 @@ scrollTo(sectionId: string): void {
 
   markAllAsRead(): void {
     this.notifSvc.markAllAsRead()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.notifications.forEach(n => n.isRead = true);
           this.unreadCount = 0;
         }
       });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

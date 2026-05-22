@@ -57,7 +57,7 @@
                     <button (click)="selectSuggestion(s)"
                       class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-blue-50 dark:hover:bg-gray-700 transition-colors text-left cursor-pointer">
                       @if (s.thumbnailUrl) {
-                        <img [src]="s.thumbnailUrl" class="w-8 h-8 rounded object-cover shrink-0" alt="{{ s.title }}" />
+                        <img [src]="getImageUrl(s.thumbnailUrl)" class="w-8 h-8 rounded object-cover shrink-0" alt="{{ s.title }}" />
                       } @else {
                         <div class="w-8 h-8 rounded bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
                           <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

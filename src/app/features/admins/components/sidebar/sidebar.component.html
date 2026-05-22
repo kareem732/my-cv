@@ -1,8 +1,16 @@
 <aside id="top-bar-sidebar" class="fixed top-0 left-0 z-40 w-64 h-full transition-transform mt-4 -translate-x-full sm:translate-x-0" aria-label="Sidebar">
-
   <div class="h-full px-3 py-4 overflow-y-auto bg-neutral-primary-soft border-e border-default">
-
     <ul class="space-y-2 font-medium mt-10">
+<!-- Profile -->
+      <li>
+        <a routerLink="/admin/profile" routerLinkActive="bg-neutral-tertiary" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
+          <svg class="w-5 h-5 transition duration-75 group-hover:text-fg-brand" fill="none" viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2"/>
+            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 20v-1a8 8 0 0 1 16 0v1"/>
+          </svg>
+          <span class="ms-3">Profile</span>
+        </a>
+      </li>
 
       <li>
         <a routerLink="/admin/dashboard" routerLinkActive="bg-neutral-tertiary" class="flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group">
@@ -95,6 +103,8 @@
         </a>
       </li>
 
+
+
       <li>
         <button (click)="logoutClicked.emit()" class="w-full text-start flex items-center px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-red-600 group cursor-pointer">
           <svg class="w-5 h-5 transition duration-75 group-hover:text-red-600" fill="none" viewBox="0 0 24 24">
@@ -105,7 +115,5 @@
       </li>
 
     </ul>
-
   </div>
-
 </aside>

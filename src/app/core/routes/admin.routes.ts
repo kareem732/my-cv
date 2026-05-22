@@ -40,6 +40,10 @@ export const ADMIN_ROUTES: Routes = [
         path: 'reviews',
         loadComponent: () => import('../../features/admins/pages/reviews/reviews.component').then(m => m.AdminReviewsComponent)
       },
+      {
+        path: 'profile',
+        loadComponent: () => import('../../features/admins/pages/profile/profile.component').then(m => m.ProfileComponent)
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   }

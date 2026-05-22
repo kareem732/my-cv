@@ -9,10 +9,12 @@ import { ProfileService, UserProfile } from '../../../../../../../../../core/ser
 })
 export class ProfileFormComponent {
   private readonly _profileService = inject(ProfileService);
-  private readonly _fb = inject(FormBuilder);
+  private readonly _fb             = inject(FormBuilder);
 
   profileUpdated = output<UserProfile>();
-  isSaving = false;
+  isSaving       = false;
+  isPristine     = true;
+  isInvalid      = true;
 
   form = this._fb.group({
     firstName: ['', Validators.required],
@@ -30,7 +32,17 @@ export class ProfileFormComponent {
           bio:       user.bio ?? '',
         });
         this.form.markAsPristine();
+        this.isPristine = true;
+        this.isInvalid  = this.form.invalid;
       }
+    });
+
+    this.form.statusChanges.subscribe(() => {
+      this.isInvalid  = this.form.invalid;
+    });
+
+    this.form.valueChanges.subscribe(() => {
+      this.isPristine = this.form.pristine;
     });
   }
 
@@ -47,7 +59,8 @@ export class ProfileFormComponent {
     this._profileService.updateProfile(body).subscribe({
       next: (updated) => {
         this.profileUpdated.emit(updated);
-        this.isSaving = false;
+        this.isSaving   = false;
+        this.isPristine = true;
         this.form.markAsPristine();
       },
       error: () => this.isSaving = false

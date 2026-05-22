@@ -1,7 +1,6 @@
 @if (isLoading) {
   <div class="max-w-2xl mx-auto py-8 px-4 space-y-8 animate-pulse">
 
-    <!-- Avatar Skeleton -->
     <div class="flex flex-col items-center gap-3">
       <div class="w-36 h-36 rounded-full bg-gray-200 dark:bg-gray-700"></div>
       <div class="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
@@ -9,7 +8,6 @@
       <div class="h-8 w-28 bg-gray-100 dark:bg-gray-700 rounded-xl"></div>
     </div>
 
-    <!-- Form Skeleton -->
     <div class="space-y-5">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="space-y-1.5">
@@ -25,19 +23,63 @@
         <div class="h-3 w-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
         <div class="h-32 bg-gray-100 dark:bg-gray-700 rounded-xl"></div>
       </div>
-      <div class="flex justify-end">
-        <div class="h-10 w-20 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
-      </div>
+      <div class="h-10 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
     </div>
 
   </div>
+
 } @else {
   <div class="max-w-2xl mx-auto py-8 px-4 space-y-8">
-    <app-profile-avatar
-      (avatarUpdated)="onAvatarUpdated($event)"
-    />
-    <app-profile-form
-      (profileUpdated)="onProfileUpdated($event)"
-    />
+
+    <app-profile-avatar (avatarUpdated)="onAvatarUpdated($event)" />
+    <app-profile-form #profileForm (profileUpdated)="onProfileUpdated($event)" />
+
+    <div class="flex items-center justify-between">
+
+      <!-- Change Password - left -->
+      <button
+        (click)="showChangePassword = !showChangePassword"
+        class="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-300
+               hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+        </svg>
+        Change Password
+        <svg class="w-4 h-4 transition-transform duration-200"
+          [class.rotate-180]="showChangePassword"
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </button>
+
+      <!-- Save - right -->
+      <button
+        (click)="profileForm.onSubmit()"
+        [disabled]="profileForm.isInvalid || profileForm.isSaving || profileForm.isPristine"
+        class="flex cursor-pointer items-center gap-2 px-6 py-2.5 mt-2
+               bg-blue-600 hover:bg-blue-700 text-white
+               text-sm font-bold rounded-xl transition-all active:scale-95
+               disabled:opacity-40 disabled:cursor-not-allowed
+               shadow-sm shadow-blue-200 dark:shadow-none">
+        @if (profileForm.isSaving) {
+          <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+          </svg>
+          Saving...
+        } @else {
+          Save
+        }
+      </button>
+
+    </div>
+
+    @if (showChangePassword) {
+      <div class="border-t border-gray-100 mt-2 dark:border-gray-700 pt-6">
+        <app-change-password />
+      </div>
+    }
+
   </div>
 }

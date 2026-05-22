@@ -43,12 +43,12 @@ menuClicked = output<void>();
   }
 
   onLogout(): void {
-    // منطق الـ logout بتاعك هنا
+
   }
 
   loadNotifications(): void {
     this.isNotifLoading = true;
-    this.notifSvc.getNotifications(false)
+    this.notifSvc.getNotifications()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => {

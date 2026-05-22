@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   private readonly _googleAuthService = inject(GoogleAuthService);
   private readonly _router = inject(Router);
   private readonly _platformId = inject(PLATFORM_ID);
-themeService = inject(ThemeService);
+  themeService = inject(ThemeService);
 
   loader = signal(false);
   errMsg = signal('');
@@ -79,6 +79,12 @@ themeService = inject(ThemeService);
 
   private handleLoginSuccess(res: any): void {
     this._authHelper.saveSession(res);
+
+    if (!this._authHelper.isLoggedIn()) {
+      this.errMsg.set('Login failed: invalid response from server');
+      return;
+    }
+
     this._router.navigate([this._authHelper.getRedirectUrl()]);
   }
 }

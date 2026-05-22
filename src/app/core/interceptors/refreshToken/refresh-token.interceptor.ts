@@ -7,6 +7,7 @@ import {
 
 import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { Router } from '@angular/router';
 
 import {
   catchError,
@@ -20,12 +21,12 @@ import {
 import { AUTHENTICATIONService } from '../../../core/services/AUTHENTICATION/authentication.service';
 
 let isRefreshing = false;
-
 const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
 export const Refresh_Token: HttpInterceptorFn = (req, next) => {
   const platformId = inject(PLATFORM_ID);
   const authService = inject(AUTHENTICATIONService);
+  const router = inject(Router);
 
   let token: string | null = null;
 
@@ -43,12 +44,7 @@ export const Refresh_Token: HttpInterceptorFn = (req, next) => {
       }
 
       if (error.status === 401) {
-        return handle401Error(
-          authReq,
-          next,
-          authService,
-          platformId
-        );
+        return handle401Error(authReq, next, authService, platformId, router);
       }
 
       return throwError(() => error);
@@ -60,11 +56,10 @@ function handle401Error(
   request: HttpRequest<any>,
   next: HttpHandlerFn,
   authService: AUTHENTICATIONService,
-  platformId: object
+  platformId: object,
+  router: Router
 ) {
-
   if (!isRefreshing) {
-
     isRefreshing = true;
     refreshTokenSubject.next(null);
 
@@ -75,20 +70,17 @@ function handle401Error(
     }
 
     if (!refreshToken) {
-      logoutLocally(platformId);
+      isRefreshing = false;
+      logoutLocally(platformId, router);
       return throwError(() => new Error('No refresh token found'));
     }
 
     return authService.logout(refreshToken).pipe(
       switchMap((res: any) => {
-
         isRefreshing = false;
 
-        const newAccessToken =
-          res.data?.accessToken || res.accessToken;
-
-        const newRefreshToken =
-          res.data?.refreshToken || res.refreshToken;
+        const newAccessToken = res.data?.accessToken || res.accessToken;
+        const newRefreshToken = res.data?.refreshToken || res.refreshToken;
 
         if (isPlatformBrowser(platformId)) {
           localStorage.setItem('accessToken', newAccessToken);
@@ -97,18 +89,11 @@ function handle401Error(
 
         refreshTokenSubject.next(newAccessToken);
 
-        return next(
-          addTokenHeader(request, newAccessToken)
-        );
+        return next(addTokenHeader(request, newAccessToken));
       }),
 
       catchError((err) => {
-
-        isRefreshing = false;
-        refreshTokenSubject.next(null);
-
-        logoutLocally(platformId);
-
+        logoutLocally(platformId, router);
         return throwError(() => err);
       })
     );
@@ -117,16 +102,11 @@ function handle401Error(
   return refreshTokenSubject.pipe(
     filter((token): token is string => token !== null),
     take(1),
-    switchMap((token) =>
-      next(addTokenHeader(request, token))
-    )
+    switchMap((token) => next(addTokenHeader(request, token)))
   );
 }
 
-function addTokenHeader(
-  request: HttpRequest<any>,
-  token: string
-) {
+function addTokenHeader(request: HttpRequest<any>, token: string) {
   return request.clone({
     setHeaders: {
       Authorization: `Bearer ${token}`
@@ -134,13 +114,15 @@ function addTokenHeader(
   });
 }
 
-function logoutLocally(platformId: object) {
+function logoutLocally(platformId: object, router: Router) {
+  isRefreshing = false;
+  refreshTokenSubject.next(null);
 
   if (isPlatformBrowser(platformId)) {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
+    localStorage.removeItem('roles');
 
-
-    window.location.href = '/login';
+    router.navigate(['/auth/login']);
   }
 }

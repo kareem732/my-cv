@@ -6,10 +6,7 @@ export const authGuard: CanActivateFn = () => {
   const auth = inject(AuthHelperService);
   const router = inject(Router);
 
-  // مش logged in → اتفضل على صفحات الـ auth
   if (!auth.isLoggedIn()) return true;
 
-  // logged in → حوّله على الـ home بتاعت الـ role
-  router.navigate([auth.getRedirectUrl()]);
-  return false;
+  return router.createUrlTree([auth.getRedirectUrl()]);
 };

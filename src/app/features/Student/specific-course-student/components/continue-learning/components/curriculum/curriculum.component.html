@@ -52,46 +52,76 @@
           @if (isOpen(section.id)) {
             <div class="divide-y divide-slate-100 dark:divide-gray-700">
               @for (lesson of section.lessons; track lesson.id) {
-                <div
-                  class="flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-gray-800 transition-colors"
-                  [class.cursor-pointer]="lesson.type === 'Video'"
-                  [class.hover:bg-slate-50]="lesson.type === 'Video'"
-                  [class.dark:hover:bg-gray-700]="lesson.type === 'Video'"
-                  (click)="lesson.type === 'Video' && lesson.videoUrl
-                    ? openVideo(lesson.id, lesson.videoUrl, lesson.title, lesson.durationInSeconds)
-                    : null">
+                <div class="bg-white dark:bg-gray-800">
 
-                  <!-- Icon -->
-                  @if (lesson.type === 'Video') {
-                    <div class="w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
-                      <svg class="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5
-                                 1.5 0 000-2.538L6.3 2.84z"/>
-                      </svg>
+                  <!-- Lesson Row -->
+                  <div
+                    class="flex items-center gap-3 px-4 py-2.5 transition-colors"
+                    [class.cursor-pointer]="lesson.type === 'Video'"
+                    [class.hover:bg-slate-50]="lesson.type === 'Video'"
+                    [class.dark:hover:bg-gray-700]="lesson.type === 'Video'"
+                    (click)="lesson.type === 'Video' && lesson.videoUrl
+                      ? openVideo(lesson.id, lesson.videoUrl, lesson.title, lesson.durationInSeconds)
+                      : null">
+
+                    @if (lesson.type === 'Video') {
+                      <div class="w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
+                        <svg class="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5
+                                   1.5 0 000-2.538L6.3 2.84z"/>
+                        </svg>
+                      </div>
+                    } @else {
+                      <div class="w-7 h-7 rounded-full bg-slate-100 dark:bg-gray-700 flex items-center justify-center shrink-0">
+                        <svg class="w-3.5 h-3.5 text-slate-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586
+                                   a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                      </div>
+                    }
+
+                    <span class="flex-1 text-xs text-slate-700 dark:text-gray-300">{{ lesson.title }}</span>
+
+                    <div class="flex items-center gap-2 shrink-0">
+                      @if (lesson.isFreePreview) {
+                        <span class="px-1.5 py-0.5 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-[10px] font-medium rounded">
+                          Preview
+                        </span>
+                      }
+                      @if (lesson.type === 'Video' && lesson.videoUrl) {
+                        <span class="text-[10px] text-blue-400 font-medium">Watch</span>
+                      }
+                      <span class="text-xs text-slate-400 dark:text-gray-500">{{ lesson.duration }}</span>
                     </div>
-                  } @else {
-                    <div class="w-7 h-7 rounded-full bg-slate-100 dark:bg-gray-700 flex items-center justify-center shrink-0">
-                      <svg class="w-3.5 h-3.5 text-slate-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586
-                                 a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                      </svg>
+                  </div>
+
+                  <!-- Resources Loading -->
+                  @if (isLoadingResources(lesson.id)) {
+                    <div class="px-4 pb-2 pt-1">
+                      <div class="h-5 w-28 bg-slate-100 dark:bg-gray-700 rounded animate-pulse"></div>
                     </div>
                   }
 
-                  <span class="flex-1 text-xs text-slate-700 dark:text-gray-300">{{ lesson.title }}</span>
-
-                  <div class="flex items-center gap-2 shrink-0">
-                    @if (lesson.isFreePreview) {
-                      <span class="px-1.5 py-0.5 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-[10px] font-medium rounded">
-                        Preview
-                      </span>
-                    }
-                    @if (lesson.type === 'Video' && lesson.videoUrl) {
-                      <span class="text-[10px] text-blue-400 dark:text-blue-400 font-medium">Watch</span>
-                    }
-                    <span class="text-xs text-slate-400 dark:text-gray-500">{{ lesson.duration }}</span>
-                  </div>
+                  <!-- Resources List -->
+                  @if (getResources(lesson.id).length > 0) {
+                    <div class="px-4 pb-2 pt-1 flex flex-wrap gap-2 border-t border-slate-100 dark:border-gray-700">
+                      @for (resource of getResources(lesson.id); track resource.id) {
+                        <a [href]="getFileUrl(resource.fileUrl)" target="_blank"
+                          class="flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-lg
+                                 bg-slate-50 dark:bg-gray-700 border border-slate-200 dark:border-gray-600
+                                 text-slate-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400
+                                 hover:border-blue-300 transition-colors">
+                          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                          </svg>
+                          {{ resource.title }}
+                          <span class="text-slate-400 dark:text-gray-500">· {{ resource.fileSizeFormatted }}</span>
+                        </a>
+                      }
+                    </div>
+                  }
 
                 </div>
               }
@@ -117,7 +147,6 @@
     <div class="w-full max-w-3xl flex flex-col gap-3"
          (click)="$event.stopPropagation()">
 
-      <!-- Header -->
       <div class="flex items-center justify-between">
         <p class="text-white text-sm font-medium truncate pr-4">{{ videoTitle() }}</p>
         <button (click)="closeVideo()"
@@ -129,7 +158,6 @@
         </button>
       </div>
 
-      <!-- YouTube Player Container -->
       <div class="w-full aspect-video rounded-xl overflow-hidden shadow-2xl bg-black">
         <div id="yt-player" class="w-full h-full"></div>
       </div>

@@ -6,11 +6,12 @@ import { SectionItemComponent } from './section-item/section-item.component';
 @Component({
   selector: 'app-section-list',
   standalone: true,
-  imports: [ SectionItemComponent, SectionFormComponent],
+  imports: [SectionItemComponent, SectionFormComponent],
   templateUrl: './section-list.component.html',
 })
 export class SectionListComponent {
   @Input() curriculum!: Curriculum;
+  @Input() courseId!: number;                                    // ✅ added
   @Input() expandedSections = new Set<number>();
   @Input() editingSectionId: number | null = null;
   @Input() editingSectionTitle = '';
@@ -33,7 +34,7 @@ export class SectionListComponent {
   @Output() sectionDrop        = new EventEmitter<number>();
   @Output() sectionDragEnd     = new EventEmitter<void>();
   @Output() editSectionStart   = new EventEmitter<Section>();
-  @Output() editSectionSave    = new EventEmitter<{ section: Section; title: string }>(); // ✅ تغير هنا
+  @Output() editSectionSave    = new EventEmitter<{ section: Section; title: string }>();
   @Output() editSectionCancel  = new EventEmitter<void>();
   @Output() deleteSection      = new EventEmitter<Section>();
   @Output() startAddLesson     = new EventEmitter<number>();

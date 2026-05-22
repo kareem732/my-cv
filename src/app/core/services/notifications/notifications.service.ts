@@ -27,11 +27,9 @@ export class NotificationsService {
   private http = inject(HttpClient);
   private base = environment2.baseUrl;
 
-  getNotifications(unreadOnly = false): Observable<NotificationsResponse> {
-    return this.http.get<NotificationsResponse>(`${this.base}notifications`, {
-      params: { unreadOnly: unreadOnly.toString() }
-    });
-  }
+  getNotifications(): Observable<NotificationsResponse> {
+  return this.http.get<NotificationsResponse>(`${this.base}notifications`);
+}
 
   markAsRead(id: number): Observable<void> {
     return this.http.patch<void>(`${this.base}notifications/${id}/read`, {});

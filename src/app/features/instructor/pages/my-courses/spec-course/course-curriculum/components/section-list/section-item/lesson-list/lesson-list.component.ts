@@ -6,11 +6,12 @@ import { LessonItemComponent } from './lesson-item/lesson-item.component';
 @Component({
   selector: 'app-lesson-list',
   standalone: true,
-  imports: [ LessonItemComponent, LessonFormComponent],
+  imports: [LessonItemComponent, LessonFormComponent],
   templateUrl: './lesson-list.component.html',
 })
 export class LessonListComponent {
   @Input() section!: Section;
+  @Input() courseId!: number;                                    // ✅ added
   @Input() editingLessonId: number | null = null;
   @Input() addingLessonToSectionId: number | null = null;
   @Input() isSavingLesson = false;

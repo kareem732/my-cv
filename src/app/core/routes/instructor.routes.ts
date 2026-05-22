@@ -39,7 +39,6 @@ export const INSTRUCTOR_ROUTES: Routes = [
           }
         ]
       },
-
       {
         path: 'reviews',
         loadComponent: () => import('../../features/instructor/pages/reviews/reviews.component')
@@ -49,6 +48,11 @@ export const INSTRUCTOR_ROUTES: Routes = [
         path: 'payout',
         loadComponent: () => import('../../features/instructor/pages/payout/payout.component')
           .then(c => c.PayoutComponent)
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('../../features/instructor/pages/profile/profile.component')
+          .then(c => c.ProfileComponent)
       }
     ]
   }

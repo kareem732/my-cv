@@ -1,5 +1,5 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { OrderService, CourseOrder } from '../../../core/services/Order/order.service';
@@ -19,6 +19,7 @@ interface NavState {
   standalone: true,
   imports: [
     CommonModule,
+    RouterLink,
     CouponFormComponent,
     PriceBreakdownComponent
   ],

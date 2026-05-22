@@ -3,14 +3,18 @@
     <div class="flex items-center justify-between">
 
       <div class="flex items-center justify-start rtl:justify-end gap-3">
-        <button data-drawer-target="top-bar-sidebar" data-drawer-toggle="top-bar-sidebar" aria-controls="top-bar-sidebar" type="button" class="sm:hidden text-heading bg-transparent box-border border border-transparent hover:bg-neutral-secondary-medium focus:ring-4 focus:ring-neutral-tertiary font-medium leading-5 rounded-base text-sm p-2 focus:outline-none">
+        <button data-drawer-target="top-bar-sidebar" data-drawer-toggle="top-bar-sidebar"
+          aria-controls="top-bar-sidebar" type="button"
+          class="sm:hidden text-heading bg-transparent box-border border border-transparent
+                 hover:bg-neutral-secondary-medium focus:ring-4 focus:ring-neutral-tertiary
+                 font-medium leading-5 rounded-base text-sm p-2 focus:outline-none">
           <span class="sr-only">Open sidebar</span>
-          <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24">
             <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h10"/>
           </svg>
         </button>
 
-        <a href="#" class="flex items-center gap-2">
+        <a routerLink="/about-us" class="flex items-center gap-2">
           <svg width="36" height="36" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
             <polygon points="70,8 118,35 118,90 70,117 22,90 22,35" fill="#4A3ADF"/>
             <polygon points="70,18 108,41 108,84 70,107 32,84 32,41" fill="none" stroke="white" stroke-width="1.5" opacity="0.2"/>
@@ -26,14 +30,16 @@
         </a>
 
         <div class="hidden sm:flex items-center gap-2 border-l border-gray-200 pl-3 ml-1">
-          <span class="text-lg font-bold text-gray-800 tracking-tight">Instructor</span>
+          <span class="text-lg font-bold text-gray-800 dark:text-gray-100 tracking-tight">Instructor</span>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
 
+        <!-- Theme Toggle -->
         <button (click)="themeService.toggleTheme()"
-          class="p-2 rounded-full cursor-pointer text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300">
+          class="p-2 rounded-full cursor-pointer text-gray-500 dark:text-gray-400
+                 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-300">
           @if (themeService.isDark()) {
             <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm0 15a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm10-5a1 1 0 110 2h-1a1 1 0 110-2h1zM3 12a1 1 0 110 2H2a1 1 0 110-2h1zm15.657-6.343a1 1 0 010 1.414l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM6.464 17.536a1 1 0 010 1.414l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 0zM17.536 17.536a1 1 0 011.414 0l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 010-1.414zM6.464 6.464a1 1 0 010 1.414l-.707.707A1 1 0 014.343 6.47l.707-.707a1 1 0 011.414 0zM12 7a5 5 0 110 10A5 5 0 0112 7z"/>
@@ -45,27 +51,53 @@
           }
         </button>
 
+        <!-- User Menu -->
         <div class="flex items-center ms-1">
           <div class="flex flex-col items-end">
             <span class="text-xs font-medium text-white bg-[#F97316] px-1.5 py-0.5 rounded-full">Instructor</span>
           </div>
 
           <div class="relative group ms-2">
-            <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300">
-              <img class="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-5.jpg" alt="user photo">
+            <button type="button" class="flex text-sm rounded-full focus:ring-4 focus:ring-gray-300">
+              <img
+                class="w-8 h-8 rounded-full object-cover"
+                [src]="getAvatarUrl(user()?.profilePictureUrl)"
+                alt="user photo">
             </button>
 
             <div class="absolute right-0 top-full pt-2 hidden group-hover:block z-50">
-              <div class="bg-white border border-gray-200 divide-y divide-gray-100 rounded-lg shadow-lg w-44">
+              <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700
+                          divide-y divide-gray-100 dark:divide-gray-700 rounded-lg shadow-lg w-44">
                 <div class="px-4 py-3">
-                  <p class="text-sm font-semibold text-gray-900">Neil Sims</p>
-                  <p class="text-xs text-gray-500">neil.sims&#64;flowbite.com</p>
-                  <span class="inline-block mt-1 text-xs font-medium text-white bg-[#F97316] px-2 py-0.5 rounded-full">Instructor</span>
+                  <p class="text-sm font-semibold text-gray-900 dark:text-white">
+                    {{ user()?.fullName || '...' }}
+                  </p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+                    {{ user()?.email }}
+                  </p>
+                  <span class="inline-block mt-1 text-xs font-medium text-white bg-[#F97316] px-2 py-0.5 rounded-full">
+                    Instructor
+                  </span>
                 </div>
                 <ul class="py-1">
-                  <li><a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard</a></li>
-                  <li><a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a></li>
-                  <li><a href="#" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Sign out</a></li>
+                  <li>
+                    <a routerLink="/instructor/dashboard"
+                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      Dashboard
+                    </a>
+                  </li>
+                  <li>
+                    <a routerLink="/instructor/profile"
+                       class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      Profile
+                    </a>
+                  </li>
+                  <li>
+                   <button (click)="signOutClicked.emit()"
+   class="w-full text-start block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+  Sign out
+</button>
+                  </li>
                 </ul>
               </div>
             </div>

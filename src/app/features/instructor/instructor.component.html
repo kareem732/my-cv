@@ -1,8 +1,7 @@
-<app-navbar-instructor></app-navbar-instructor>
-
+<app-navbar-instructor (signOutClicked)="openLogoutPopup()"></app-navbar-instructor>
 <app-sidebar-instructor (logoutClicked)="openLogoutPopup()"></app-sidebar-instructor>
 
-<main class="sm:ml-64 mt-14 min-h-[calc(100vh-3.5rem)] flex flex-col">
+<main class="sm:ml-64 mt-14 min-h-[calc(100vh-3.5rem)] flex flex-col bg-white dark:bg-gray-900">
   <router-outlet></router-outlet>
 </main>
 

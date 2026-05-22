@@ -5,6 +5,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { CurriculmService, Curriculum } from '../../../../../core/services/Curriculm/curriculm.service';
 import { ProgressService } from '../../../../../core/services/progress/progress.service';
+import { ResourcesService, Resource } from '../../../../../core/services/Resources/resources.service';
+import { environment2 } from '../../../../../core/environment/ENV';
 
 declare global {
   interface Window {
@@ -24,30 +26,33 @@ export class CurriculumComponent implements OnInit, OnDestroy {
 
   private curriculumService = inject(CurriculmService);
   private progressService   = inject(ProgressService);
+  private resourcesService  = inject(ResourcesService);
   private platformId        = inject(PLATFORM_ID);
 
-  // ── State ─────────────────────────────────────────────────
-  curriculum  = signal<Curriculum | null>(null);
-  isLoading   = signal(true);
-  error       = signal<string | null>(null);
+  curriculum   = signal<Curriculum | null>(null);
+  isLoading    = signal(true);
+  error        = signal<string | null>(null);
   openSections = signal<Set<number>>(new Set());
 
-  // ── Video ─────────────────────────────────────────────────
+  lessonResources  = signal<Map<number, Resource[]>>(new Map());
+  loadingResources = signal<Set<number>>(new Set());
+
   videoTitle  = signal<string>('');
   isVideoOpen = signal(false);
 
   private ytPlayer: any = null;
   private watchInterval: any = null;
-  private watchedMap   = new Map<number, number>();  // lessonId → watchedSeconds
-  private completedSet = new Set<number>();           // lessons خلصت
+  private watchedMap   = new Map<number, number>();
+  private completedSet = new Set<number>();
 
-  // ── Init ──────────────────────────────────────────────────
   ngOnInit(): void {
     this.curriculumService.getCurriculum(this.courseId).subscribe({
       next: (data) => {
         this.curriculum.set(data);
         if (data.sections.length > 0) {
-          this.openSections.set(new Set([data.sections[0].id]));
+          const firstSection = data.sections[0];
+          this.openSections.set(new Set([firstSection.id]));
+          this.loadResourcesForSection(firstSection);
         }
         this.isLoading.set(false);
       },
@@ -58,17 +63,69 @@ export class CurriculumComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ── Sections ──────────────────────────────────────────────
   toggleSection(id: number): void {
     const current = new Set(this.openSections());
-    current.has(id) ? current.delete(id) : current.add(id);
+    if (current.has(id)) {
+      current.delete(id);
+    } else {
+      current.add(id);
+      const section = this.curriculum()?.sections.find(s => s.id === id);
+      if (section) this.loadResourcesForSection(section);
+    }
     this.openSections.set(current);
   }
 
-  // ── Open Video ────────────────────────────────────────────
+  private loadResourcesForSection(section: any): void {
+    section.lessons.forEach((lesson: any) => {
+      if (!this.lessonResources().has(lesson.id)) {
+        this.loadResourcesForLesson(section.id, lesson.id);
+      }
+    });
+  }
+
+  private loadResourcesForLesson(sectionId: number, lessonId: number): void {
+    const loading = new Set(this.loadingResources());
+    loading.add(lessonId);
+    this.loadingResources.set(loading);
+
+    this.resourcesService.getResources(this.courseId, sectionId, lessonId).subscribe({
+      next: (resources) => {
+        const map = new Map(this.lessonResources());
+        map.set(lessonId, resources);
+        this.lessonResources.set(map);
+
+        const done = new Set(this.loadingResources());
+        done.delete(lessonId);
+        this.loadingResources.set(done);
+      },
+      error: () => {
+        const done = new Set(this.loadingResources());
+        done.delete(lessonId);
+        this.loadingResources.set(done);
+      }
+    });
+  }
+
+  getResources(lessonId: number): Resource[] {
+    return this.lessonResources().get(lessonId) ?? [];
+  }
+
+  isLoadingResources(lessonId: number): boolean {
+    return this.loadingResources().has(lessonId);
+  }
+
+  isOpen(id: number): boolean {
+    return this.openSections().has(id);
+  }
+
+  getFileUrl(fileUrl: string): string {
+    if (fileUrl.startsWith('http')) return fileUrl;
+    const serverRoot = environment2.baseUrl.replace(/\/api\/?$/, '');
+    return `${serverRoot}${fileUrl}`;
+  }
+
   openVideo(lessonId: number, url: string, title: string, totalSeconds: number): void {
     this.destroyPlayer();
-
     this.videoTitle.set(title);
     this.isVideoOpen.set(true);
 
@@ -78,14 +135,12 @@ export class CurriculumComponent implements OnInit, OnDestroy {
     setTimeout(() => this.initYTPlayer(videoId, lessonId, totalSeconds), 100);
   }
 
-  // ── Close Video ───────────────────────────────────────────
   closeVideo(): void {
     this.destroyPlayer();
     this.isVideoOpen.set(false);
     this.videoTitle.set('');
   }
 
-  // ── YouTube Player ────────────────────────────────────────
   private initYTPlayer(videoId: string, lessonId: number, totalSeconds: number): void {
     const createPlayer = () => {
       this.ytPlayer = new window.YT.Player('yt-player', {
@@ -131,7 +186,6 @@ export class CurriculumComponent implements OnInit, OnDestroy {
     }
   }
 
-  // ── Progress ──────────────────────────────────────────────
   private startInterval(lessonId: number, totalSeconds: number): void {
     this.stopInterval();
     this.watchInterval = setInterval(() => {
@@ -168,7 +222,6 @@ export class CurriculumComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ── Helpers ───────────────────────────────────────────────
   private destroyPlayer(): void {
     this.stopInterval();
     if (this.ytPlayer) {

@@ -13,6 +13,7 @@ import { LessonListComponent } from './lesson-list/lesson-list.component';
 export class SectionItemComponent implements OnChanges {
   @Input() section!: Section;
   @Input() index!: number;
+  @Input() courseId!: number;                                    // ✅ added
   @Input() isExpanded = false;
   @Input() isEditingSection = false;
   @Input() isSavingSection = false;

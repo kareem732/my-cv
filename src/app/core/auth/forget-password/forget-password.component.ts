@@ -1,14 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AUTHENTICATIONService } from '../../services/AUTHENTICATION/authentication.service';
-import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-forget-password',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule ,RouterLink],
   templateUrl: './forget-password.component.html',
   styleUrl: './forget-password.component.css'
 })

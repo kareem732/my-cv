@@ -1,6 +1,5 @@
 <div class="space-y-4">
 
-  <!-- Loading -->
   @if (isLoading) {
     <div class="space-y-3 animate-pulse">
       @for (s of [1,2,3]; track s) {
@@ -15,7 +14,6 @@
     </div>
   }
 
-  <!-- Error -->
   @if (error && !isLoading) {
     <div class="flex flex-col items-center justify-center py-12 gap-3">
       <div class="flex items-center gap-2 p-4 text-red-800 dark:text-red-300 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg w-full max-w-md">
@@ -27,13 +25,13 @@
     </div>
   }
 
-  <!-- Content -->
   @if (!isLoading && curriculum) {
 
     <app-curriculum-stats [curriculum]="curriculum"/>
 
     <app-section-list
       [curriculum]="curriculum"
+      [courseId]="courseId"
       [expandedSections]="expandedSections"
       [editingSectionId]="editingSectionId"
       [editingSectionTitle]="editingSectionTitle"

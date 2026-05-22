@@ -107,11 +107,14 @@
   }
 
   @if (isEditing) {
-    <app-lesson-form
-      mode="edit"
-      [isSaving]="isSaving"
-      [initialData]="editInitialData"
-      (save)="editSave.emit($event)"
-      (cancel)="editCancel.emit()"/>
-  }
+  <app-lesson-form
+    mode="edit"
+    [isSaving]="isSaving"
+    [initialData]="editInitialData"
+    [courseId]="courseId"
+    [sectionId]="sectionId"
+    [lessonId]="lesson.id"
+    (save)="editSave.emit($event)"
+    (cancel)="editCancel.emit()"/>
+}
 </div>

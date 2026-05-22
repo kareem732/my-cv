@@ -39,10 +39,8 @@ export class CouponFormComponent {
       .subscribe({
         next: (order: CourseOrder) => {
           this.orderUpdated.emit(order);
-
           this.couponApplied.set(true);
           this.successMsg.set(`${code} applied successfully`);
-
           this.isApplying.set(false);
         },
         error: () => {
@@ -56,7 +54,6 @@ export class CouponFormComponent {
     this.couponCode.set('');
     this.couponApplied.set(false);
     this.errorMsg.set(null);
-
     this.couponRemoved.emit();
   }
 }

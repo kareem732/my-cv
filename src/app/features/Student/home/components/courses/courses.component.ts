@@ -58,7 +58,13 @@ export class CoursesComponent implements OnInit, OnDestroy {
     const q = this.filter.search.toLowerCase();
     return this.courses.filter(c => c.title.toLowerCase().includes(q));
   }
-  
+
+// في courses.component.ts
+getImageUrl(url: string | null | undefined): string {
+  if (!url) return 'https://placehold.co/480x270?text=Course';
+  if (url.startsWith('http')) return url;
+  return `https://guidy-api-v03-f8dngzewf7ebehea.austriaeast-01.azurewebsites.net${url}`;
+}
 
   @HostListener('document:click')
   onDocumentClick(): void {

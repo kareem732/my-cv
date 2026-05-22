@@ -48,6 +48,9 @@ export class AUTHENTICATIONService {
   logout(refreshToken: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/revoke-token`, { refreshToken });
   }
+ changePassword(payload: { currentPassword: string; newPassword: string; confirmPassword: string }): Observable<any> {
+  return this.http.post(`${this.apiUrl}/change-password`, payload);
+}
 
   constructor() { }
 }

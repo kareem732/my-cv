@@ -28,7 +28,9 @@ export class AuthHelperService {
     if (!this.isBrowser) return;
     if (res?.accessToken) localStorage.setItem('accessToken', res.accessToken);
     if (res?.refreshToken) localStorage.setItem('refreshToken', res.refreshToken);
-    if (res?.roles) localStorage.setItem('roles', JSON.stringify(res.roles));
+    if (res?.roles && Array.isArray(res.roles)) {
+      localStorage.setItem('roles', JSON.stringify(res.roles));
+    }
   }
 
   clearStorage(): void {
@@ -42,6 +44,7 @@ export class AuthHelperService {
     const roles = this.getRoles();
     if (roles.includes('Admin')) return '/admin/dashboard';
     if (roles.includes('Instructor')) return '/instructor/dashboard';
-    return '/student/home';
+    if (roles.includes('Student')) return '/student/home';
+    return '/auth/login';
   }
 }
