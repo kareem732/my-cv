@@ -13,7 +13,6 @@ export class SidebarComponent implements OnInit {
   private readonly _profileService = inject(ProfileService);
   private readonly baseUrl = 'https://guidy-api-v03-f8dngzewf7ebehea.austriaeast-01.azurewebsites.net';
 
-  // استقبال الحالة وإرسال الأحداث للـ Parent
   isOpen = input<boolean>(false);
   closeSidebar = output<void>();
   logoutClicked = output<void>();

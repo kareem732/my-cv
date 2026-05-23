@@ -4,6 +4,7 @@ import { NavbarComponent } from "./components/navbar/navbar.component";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { AUTHENTICATIONService } from '../../core/services/AUTHENTICATION/authentication.service';
 import { ProfileService } from '../../core/services/Profile/profile.service';
+import { LogoutService } from '../../core/services/logout/logout.service';
 
 @Component({
   selector: 'app-admin',
@@ -18,6 +19,7 @@ export class AdminComponent {
 private readonly _profileService = inject(ProfileService);
   isLogoutPopupOpen = signal<boolean>(false);
   isLogoutLoading = signal<boolean>(false);
+  readonly logoutService = inject(LogoutService);
 
   openLogoutPopup() {
     this.isLogoutPopupOpen.set(true);
@@ -28,23 +30,4 @@ private readonly _profileService = inject(ProfileService);
     this.isLogoutLoading.set(false);
   }
 
-confirmLogout() {
-  this.isLogoutLoading.set(true);
-  const refreshToken = localStorage.getItem('refreshToken') || '';
-  const theme = localStorage.getItem('theme');
-
-  this._authService.logout(refreshToken).subscribe({
-    next: () => {
-      localStorage.clear();
-      if (theme) localStorage.setItem('theme', theme);
-      this._profileService.currentUser.set(null);
-      this.closeLogoutPopup();
-      this._router.navigate(['auth/login']);
-    },
-    error: (err) => {
-      console.error('Logout failed:', err);
-      this.isLogoutLoading.set(false);
-    }
-  });
-}
 }

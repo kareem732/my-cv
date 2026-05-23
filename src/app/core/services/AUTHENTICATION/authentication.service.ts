@@ -10,15 +10,26 @@ export interface ResetPasswordPayload {
   confirmPassword: string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+export interface AuthResponse {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  userName: string;
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: string;
+  roles: string[];
+}
+
+@Injectable({ providedIn: 'root' })
 export class AUTHENTICATIONService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment2.baseUrl}auth`;
 
-  login(userInfo: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, userInfo);
+  login(userInfo: any): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, userInfo);
   }
 
   register(userInfo: any): Observable<any> {
@@ -29,8 +40,8 @@ export class AUTHENTICATIONService {
     return this.http.post(`${this.apiUrl}/verify-email`, userInfo);
   }
 
-  googleLogin(payload: { idToken: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/google`, payload);
+  googleLogin(payload: { idToken: string }): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/google`, payload);
   }
 
   resetPassword(payload: ResetPasswordPayload): Observable<any> {
@@ -45,12 +56,24 @@ export class AUTHENTICATIONService {
     return this.http.post(`${this.apiUrl}/resend-otp`, payload);
   }
 
+  // ✅ للـ logout الحقيقي — بيلغي الـ token على السيرفر
   logout(refreshToken: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/revoke-token`, { refreshToken });
   }
- changePassword(payload: { currentPassword: string; newPassword: string; confirmPassword: string }): Observable<any> {
-  return this.http.post(`${this.apiUrl}/change-password`, payload);
-}
 
-  constructor() { }
+  // ✅ للـ interceptor — بيجدد الـ access token وبيبعت الاتنين زي ما السيرفر بيطلب
+  refreshToken(accessToken: string, refreshToken: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/refresh-token`, {
+      accessToken,
+      refreshToken,
+    });
+  }
+
+  changePassword(payload: {
+    currentPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+  }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/change-password`, payload);
+  }
 }

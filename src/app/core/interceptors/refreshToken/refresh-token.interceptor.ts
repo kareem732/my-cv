@@ -2,49 +2,44 @@ import {
   HttpInterceptorFn,
   HttpRequest,
   HttpHandlerFn,
-  HttpErrorResponse
+  HttpErrorResponse,
 } from '@angular/common/http';
 
-import { inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-
 import {
   catchError,
   switchMap,
   throwError,
   BehaviorSubject,
   filter,
-  take
+  take,
 } from 'rxjs';
 
 import { AUTHENTICATIONService } from '../../../core/services/AUTHENTICATION/authentication.service';
+import { AuthHelperService } from '../../services/AuthHelper/auth-helper.service';
 
 let isRefreshing = false;
 const refreshTokenSubject = new BehaviorSubject<string | null>(null);
 
 export const Refresh_Token: HttpInterceptorFn = (req, next) => {
-  const platformId = inject(PLATFORM_ID);
+  const authHelper = inject(AuthHelperService);
   const authService = inject(AUTHENTICATIONService);
   const router = inject(Router);
 
-  let token: string | null = null;
-
-  if (isPlatformBrowser(platformId)) {
-    token = localStorage.getItem('accessToken');
-  }
-
+  const token = authHelper.getAccessToken();
   const authReq = token ? addTokenHeader(req, token) : req;
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-
+      // لو الـ request نفسه هو الـ refresh — اوقف ومتعملش loop
       if (req.url.includes('/refresh-token')) {
+        logoutLocally(authHelper, router);
         return throwError(() => error);
       }
 
       if (error.status === 401) {
-        return handle401Error(authReq, next, authService, platformId, router);
+        return handle401Error(authReq, next, authService, authHelper, router);
       }
 
       return throwError(() => error);
@@ -56,49 +51,46 @@ function handle401Error(
   request: HttpRequest<any>,
   next: HttpHandlerFn,
   authService: AUTHENTICATIONService,
-  platformId: object,
+  authHelper: AuthHelperService,
   router: Router
 ) {
   if (!isRefreshing) {
     isRefreshing = true;
     refreshTokenSubject.next(null);
 
-    let refreshToken: string | null = null;
+    const accessToken = authHelper.getAccessToken();
+    const refreshToken = authHelper.getRefreshToken();
 
-    if (isPlatformBrowser(platformId)) {
-      refreshToken = localStorage.getItem('refreshToken');
-    }
-
-    if (!refreshToken) {
+    // لو مفيش tokens خالص — اعمل logout فوراً
+    if (!accessToken || !refreshToken) {
       isRefreshing = false;
-      logoutLocally(platformId, router);
-      return throwError(() => new Error('No refresh token found'));
+      logoutLocally(authHelper, router);
+      return throwError(() => new Error('No tokens found'));
     }
 
-    return authService.logout(refreshToken).pipe(
-      switchMap((res: any) => {
+    // ✅ بعت الاتنين زي ما السيرفر بيطلب
+    return authService.refreshToken(accessToken, refreshToken).pipe(
+      switchMap((res) => {
         isRefreshing = false;
 
-        const newAccessToken = res.data?.accessToken || res.accessToken;
-        const newRefreshToken = res.data?.refreshToken || res.refreshToken;
+        authHelper.saveSession({
+          accessToken: res.accessToken,
+          refreshToken: res.refreshToken,
+          roles: res.roles as any,
+        });
 
-        if (isPlatformBrowser(platformId)) {
-          localStorage.setItem('accessToken', newAccessToken);
-          localStorage.setItem('refreshToken', newRefreshToken);
-        }
-
-        refreshTokenSubject.next(newAccessToken);
-
-        return next(addTokenHeader(request, newAccessToken));
+        refreshTokenSubject.next(res.accessToken);
+        return next(addTokenHeader(request, res.accessToken));
       }),
 
       catchError((err) => {
-        logoutLocally(platformId, router);
+        logoutLocally(authHelper, router);
         return throwError(() => err);
       })
     );
   }
 
+  // لو في refresh جاري — استنى وبعت الـ request بعد ما يخلص
   return refreshTokenSubject.pipe(
     filter((token): token is string => token !== null),
     take(1),
@@ -108,21 +100,13 @@ function handle401Error(
 
 function addTokenHeader(request: HttpRequest<any>, token: string) {
   return request.clone({
-    setHeaders: {
-      Authorization: `Bearer ${token}`
-    }
+    setHeaders: { Authorization: `Bearer ${token}` },
   });
 }
 
-function logoutLocally(platformId: object, router: Router) {
+function logoutLocally(authHelper: AuthHelperService, router: Router) {
   isRefreshing = false;
   refreshTokenSubject.next(null);
-
-  if (isPlatformBrowser(platformId)) {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('roles');
-
-    router.navigate(['/auth/login']);
-  }
+  authHelper.clearStorage();
+  router.navigate(['/auth/login']);
 }

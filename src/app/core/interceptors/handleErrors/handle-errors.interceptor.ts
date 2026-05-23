@@ -5,12 +5,17 @@ import { Router } from '@angular/router';
 import { ToastService } from '../../services/Toast/toast.service';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
-  const toast  = inject(ToastService);
+  const toast = inject(ToastService);
   const router = inject(Router);
 
   return next(req).pipe(
     tap((event) => {
-      if (event instanceof HttpResponse && req.method !== 'GET' && event.status >= 200 && event.status < 300) {
+      if (
+        event instanceof HttpResponse &&
+        req.method !== 'GET' &&
+        event.status >= 200 &&
+        event.status < 300
+      ) {
         if (!req.url.includes('login')) {
           const body = event.body as any;
           const successMsg = body?.message || 'Action completed successfully';
@@ -24,8 +29,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 0) {
         errorMsg = 'No Internet Connection or Server is unreachable.';
       } else if (error.status === 401) {
+        // ✅ مش بنعمل navigate هنا — الـ refresh interceptor بيتولاها
         errorMsg = 'Unauthorized! Please login again.';
-        router.navigate(['/auth/login']);
       } else if (error.status === 403) {
         errorMsg = 'You do not have permission to perform this action.';
       } else if (error.status === 404) {
@@ -42,7 +47,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       toast.showToast(errorMsg, 'error');
       console.error('%c [API Error]:', 'color: white; background: red; padding: 4px;', errorMsg);
-      return throwError(() => error); 
+      return throwError(() => error);
     })
   );
 };
