@@ -44,7 +44,7 @@
         <!-- Thumbnail -->
         <div class="relative h-56 bg-gray-100 dark:bg-gray-700 overflow-hidden">
           <img
-            [src]="details()!.thumbnailUrl"
+             [src]="getImageUrl(details()!.thumbnailUrl)"
             [alt]="details()!.courseTitle"
             class="w-full h-full object-cover"
             onerror="this.style.display='none'"

@@ -14,7 +14,8 @@ import { AUTHENTICATIONService, ResetPasswordPayload } from '../../services/AUTH
 export class ResetPasswordComponent implements OnInit {
   @Input() emailFromForget: string = '';
   @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef>;
-
+showNew = signal(false);
+showConfirm = signal(false);
   private readonly _authService = inject(AUTHENTICATIONService);
   private readonly _router = inject(Router);
 

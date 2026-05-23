@@ -36,7 +36,7 @@ private readonly _profileService = inject(ProfileService);
 
   closeLogoutPopup() {
     this.isLogoutPopupOpen.set(false);
-    this.isLogoutLoading.set(false); // Reset loading state when closed
+    this.isLogoutLoading.set(false); 
   }
 
 confirmLogout() {
@@ -48,7 +48,7 @@ confirmLogout() {
     next: () => {
       localStorage.clear();
       if (theme) localStorage.setItem('theme', theme);
-      this._profileService.currentUser.set(null); 
+      this._profileService.currentUser.set(null);
       this.closeLogoutPopup();
       this._router.navigate(['auth/login']);
     },

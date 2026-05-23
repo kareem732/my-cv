@@ -3,11 +3,12 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotificationsService, Notification } from '../../../../../core/services/notifications/notifications.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [CommonModule, DatePipe, SidebarComponent],
+  imports: [CommonModule, DatePipe, SidebarComponent,RouterLink],
   templateUrl: './topbar.component.html',
 })
 export class TopbarComponent implements OnInit {

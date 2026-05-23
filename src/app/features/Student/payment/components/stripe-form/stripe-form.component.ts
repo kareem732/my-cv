@@ -104,7 +104,6 @@ export class StripeFormComponent implements AfterViewInit, OnDestroy {
       });
 
     } catch (err) {
-      console.error('STRIPE INIT ERROR =>', err);
       this.errorMessage.set('Failed to initialize payment form.');
       this.isLoading.set(false);
     }

@@ -29,6 +29,12 @@
         </button>
       </div>
 
+ <a routerLink="/student/home"
+   class="px-4 py-1 block text-sm uppercase tracking-wide rounded-full border border-gray-600 dark:border-gray-500
+          text-gray-800 dark:text-gray-300  transition-colors">
+  Home
+</a>
+
       <!-- Right: notifications -->
       <div class="flex items-center gap-3">
         <div class="relative">
@@ -45,6 +51,7 @@
               </span>
             }
           </button>
+
 
           @if (isNotifOpen()) {
             <div class="fixed inset-0 z-40" (click)="closeNotif()"></div>

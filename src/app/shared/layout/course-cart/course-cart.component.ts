@@ -16,7 +16,7 @@ export class COURSECARTComponent implements OnInit {
   ngOnInit() {
     this._courseService.GetAllCourses().subscribe({
       next: (res: COURSERES) => {
-        this.courses.set(res.data); 
+        this.courses.set(res.data);
       },
       error: (err) => {
         console.error(err);

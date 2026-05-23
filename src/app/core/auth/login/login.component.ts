@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
   private readonly _router = inject(Router);
   private readonly _platformId = inject(PLATFORM_ID);
   themeService = inject(ThemeService);
-
+  showPassword = signal(false);
   loader = signal(false);
   errMsg = signal('');
 

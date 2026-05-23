@@ -7,6 +7,7 @@ export interface AdminCourses {
   instructorName: string
   status: string
   price: number
+  discountPrice: number | null
   enrollments: number
   averageRating: number
   totalRatings: number

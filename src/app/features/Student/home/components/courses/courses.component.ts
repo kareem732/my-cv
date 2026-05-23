@@ -119,27 +119,34 @@ getImageUrl(url: string | null | undefined): string {
     this.destroy$.complete();
   }
 
-  loadCourses(): void {
-    this.loading = true;
-    this.error   = false;
+ loadCourses(): void {
+  this.loading = true;
+  this.error   = false;
 
-    this.homeService.getCourses(this.filter)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res: PaginatedCourses) => {
-          this.courses    = res.data;
-          this.totalCount = res.totalCount;
-          this.totalPages = res.totalPages;
-          this.hasNext    = res.hasNext;
-          this.hasPrev    = res.hasPrevious;
-          this.loading    = false;
-        },
-        error: () => {
-          this.error   = true;
-          this.loading = false;
-        }
-      });
-  }
+  this.homeService.getCourses(this.filter)
+    .pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (res: PaginatedCourses) => {
+        this.courses = res.data.sort((a, b) => {
+          const priceA = a.discountPrice ?? a.price;
+          const priceB = b.discountPrice ?? b.price;
+
+          if (this.filter.sortBy === 'price_desc') return priceB - priceA;
+          if (this.filter.sortBy === 'price_asc')  return priceA - priceB;
+          return 0;
+        });
+        this.totalCount = res.totalCount;
+        this.totalPages = res.totalPages;
+        this.hasNext    = res.hasNext;
+        this.hasPrev    = res.hasPrevious;
+        this.loading    = false;
+      },
+      error: () => {
+        this.error   = true;
+        this.loading = false;
+      }
+    });
+}
 
   applyFilter(): void {
     this.filter.pageIndex = 1;

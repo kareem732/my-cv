@@ -19,7 +19,6 @@ export class MyLearningsComponent implements OnInit {
   error       = signal<string | null>(null);
   skeletons   = [1, 2, 3, 4, 5, 6];
 
-  // ✅ هل فيه child route نشط؟
   get isChildActive(): boolean {
     return this.route.children.length > 0;
   }
@@ -30,7 +29,11 @@ export class MyLearningsComponent implements OnInit {
       error: ()     => { this.error.set('Failed to load your courses.'); this.isLoading.set(false); }
     });
   }
-
+getImageUrl(url: string | null | undefined): string {
+  if (!url) return 'https://placehold.co/480x270?text=Course';
+  if (url.startsWith('http')) return url;
+  return `https://guidy-api-v03-f8dngzewf7ebehea.austriaeast-01.azurewebsites.net${url}`;
+}
   goToDetails(courseId: number): void {
     this.router.navigate(['course-learning', courseId], { relativeTo: this.route });
   }

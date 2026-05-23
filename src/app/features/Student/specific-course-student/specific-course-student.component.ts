@@ -73,14 +73,11 @@ export class SpecificCourseStudentComponent implements OnInit {
   }
 
   private checkEnrollment(courseId: number): void {
-      console.log('checking courseId:', courseId); // ✅ ضيف ده
   this.enrollmentsService.checkEnrollment(courseId).subscribe({
     next: (isEnrolled) => {
-      console.log('isEnrolled:', isEnrolled); // ✅ ضيف ده
       this.isEnrolled.set(isEnrolled);
     },
     error: (err) => {
-      console.log('checkEnrollment error:', err); // ✅ وده
       this.isEnrolled.set(false);
     }
   });

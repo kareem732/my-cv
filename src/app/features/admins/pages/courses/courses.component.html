@@ -85,18 +85,25 @@
               </div>
 
               <div class="flex items-center justify-between">
-                <span class="inline-block px-2.5 py-1 rounded-full text-xs font-medium"
-                  [ngClass]="{
-  'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300':   course.status === 'Published',
-  'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300': course.status === 'UnderReview',
-  'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white':             course.status === 'Draft',
-  'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300':           course.status === 'Archived',
-  'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300':            course.status === 'Rejected'
-}">
-                  {{ course.status }}
-                </span>
-                <span class="text-sm font-semibold text-slate-700 dark:text-gray-200">{{ course.price | currency }}</span>
-              </div>
+  <span class="inline-block px-2.5 py-1 rounded-full text-xs font-medium"
+    [ngClass]="{
+      'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300':   course.status === 'Published',
+      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300': course.status === 'UnderReview',
+      'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white':             course.status === 'Draft',
+      'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300':           course.status === 'Archived',
+      'bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300':            course.status === 'Rejected'
+    }">
+    {{ course.status }}
+  </span>
+  <div class="flex items-center gap-2">
+    @if (course.discountPrice) {
+      <span class="text-xs text-slate-400 dark:text-gray-500 line-through">{{ course.price | currency }}</span>
+      <span class="text-sm font-semibold text-slate-700 dark:text-gray-200">{{ course.discountPrice | currency }}</span>
+    } @else {
+      <span class="text-sm font-semibold text-slate-700 dark:text-gray-200">{{ course.price | currency }}</span>
+    }
+  </div>
+</div>
 
               <div class="flex items-center gap-2">
                 <div class="flex-1 h-1.5 bg-slate-200 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -266,10 +273,12 @@
             <span>{{ course.categoryName }} › {{ course.subCategoryName }}</span>
             <span>{{ course.level }}</span>
             <span>{{ course.language }}</span>
-            <span class="font-semibold text-slate-700 dark:text-gray-200">{{ course.price | currency }}</span>
             @if (course.discountPrice) {
-              <span class="line-through text-slate-400 dark:text-gray-500">{{ course.discountPrice | currency }}</span>
-            }
+  <span class="line-through text-slate-400 dark:text-gray-500">{{ course.price | currency }}</span>
+  <span class="font-semibold text-slate-700 dark:text-gray-200">{{ course.discountPrice | currency }}</span>
+} @else {
+  <span class="font-semibold text-slate-700 dark:text-gray-200">{{ course.price | currency }}</span>
+}
           </div>
 
           <p class="text-sm text-slate-600 dark:text-gray-300 mb-4 leading-relaxed">{{ course.shortDescription }}</p>

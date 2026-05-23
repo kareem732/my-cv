@@ -30,7 +30,11 @@ export class CourseLearningComponent implements OnInit {
       error: ()     => { this.error.set('Failed to load course details.'); this.isLoading.set(false); }
     });
   }
-
+getImageUrl(url: string | null | undefined): string {
+  if (!url) return 'https://placehold.co/480x270?text=Course';
+  if (url.startsWith('http')) return url;
+  return `https://guidy-api-v03-f8dngzewf7ebehea.austriaeast-01.azurewebsites.net${url}`;
+}
   goBack(): void {
     this.router.navigate(['/student/profile/my-learnings']);
   }

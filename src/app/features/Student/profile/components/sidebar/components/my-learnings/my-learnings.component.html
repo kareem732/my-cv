@@ -42,7 +42,7 @@
             <!-- Thumbnail -->
             <div class="relative h-44 bg-gray-100 dark:bg-gray-700 overflow-hidden">
               <img
-                [src]="enrollment.thumbnailUrl"
+                [src]="getImageUrl(enrollment.thumbnailUrl)"
                 [alt]="enrollment.courseTitle"
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 onerror="this.style.display='none'"

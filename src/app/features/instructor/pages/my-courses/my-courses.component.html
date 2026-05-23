@@ -207,7 +207,14 @@
                 </svg>
                 {{ course.totalStudents }}
               </span>
-              <span class="font-semibold text-blue-600 dark:text-blue-400 ml-auto">${{ course.price }}</span>
+              <div class="flex items-center gap-2 ml-auto">
+  @if (course.discountPrice) {
+    <span class="text-xs text-gray-400 dark:text-gray-500 line-through">${{ course.price }}</span>
+    <span class="font-semibold text-blue-600 dark:text-blue-400">${{ course.discountPrice }}</span>
+  } @else {
+    <span class="font-semibold text-blue-600 dark:text-blue-400">${{ course.price }}</span>
+  }
+</div>
             </div>
 
             <div class="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">

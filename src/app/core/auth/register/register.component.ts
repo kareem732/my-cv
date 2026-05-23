@@ -24,7 +24,8 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   private readonly _router = inject(Router);
   private readonly _platformId = inject(PLATFORM_ID);
 themeService = inject(ThemeService);
-
+showPassword = signal(false);
+showConfirm = signal(false);
   errMsg = signal<string>('');
   loader = signal<boolean>(false);
 
