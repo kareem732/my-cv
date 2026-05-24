@@ -11,7 +11,7 @@ export const routes: Routes = [
     path: 'about-us',
     loadComponent: () => import('../app/features/Student/about-us/about-us.component')
       .then(m => m.AboutUsComponent)
-  },
+  }, //
 
   {
     path: 'admin',
