@@ -8,79 +8,55 @@ import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [CommonModule, DatePipe, SidebarComponent,RouterLink],
+  imports: [CommonModule, DatePipe, SidebarComponent, RouterLink],
   templateUrl: './topbar.component.html',
 })
 export class TopbarComponent implements OnInit {
-
-  private notifSvc   = inject(NotificationsService);
-  private destroyRef = inject(DestroyRef);
+  private notificationsService = inject(NotificationsService);
+  private destroyRef           = inject(DestroyRef);
 
   isSidebarOpen  = signal<boolean>(false);
   isNotifOpen    = signal<boolean>(false);
-  notifications: Notification[] = [];
-  unreadCount    = 0;
   isNotifLoading = false;
+  notifications: Notification[] = [];
+  unreadCount = 0;
+
+  menuClicked = output<void>();
 
   ngOnInit(): void {
-    this.loadNotifications();
-  }
-
-  toggleSidebar(): void {
-    this.isSidebarOpen.update(v => !v);
-  }
-menuClicked = output<void>();
-  closeSidebar(): void {
-    this.isSidebarOpen.set(false);
-  }
-
-  toggleNotif(): void {
-    this.isNotifOpen.update(v => !v);
-    if (this.isNotifOpen()) this.loadNotifications();
-  }
-
-  closeNotif(): void {
-    this.isNotifOpen.set(false);
-  }
-
-  onLogout(): void {
-
-  }
-
-  loadNotifications(): void {
-    this.isNotifLoading = true;
-    this.notifSvc.getNotifications()
+    this.notificationsService.notifications
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (res) => {
-          this.notifications  = res.notifications;
-          this.unreadCount    = res.unreadCount;
-          this.isNotifLoading = false;
-        },
-        error: () => { this.isNotifLoading = false; }
-      });
+      .subscribe(n => this.notifications = n);
+
+    this.notificationsService.unreadCount
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(c => this.unreadCount = c);
+
+    this.notificationsService.isLoading
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(l => this.isNotifLoading = l);
+
+    this.notificationsService.getNotifications()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
   }
 
-  markAsRead(notif: Notification): void {
-    if (notif.isRead) return;
-    this.notifSvc.markAsRead(notif.id)
+  toggleSidebar(): void { this.isSidebarOpen.update(v => !v); }
+  closeSidebar(): void  { this.isSidebarOpen.set(false); }
+  toggleNotif(): void   { this.isNotifOpen.update(v => !v); }
+  closeNotif(): void    { this.isNotifOpen.set(false); }
+  onLogout(): void      {}
+
+  markAsRead(notification: Notification): void {
+    if (notification.isRead) return;
+    this.notificationsService.markAsRead(notification.id)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          notif.isRead = true;
-          this.unreadCount = Math.max(0, this.unreadCount - 1);
-        }
-      });
+      .subscribe();
   }
 
   markAllAsRead(): void {
-    this.notifSvc.markAllAsRead()
+    this.notificationsService.markAllAsRead()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
-          this.notifications.forEach(n => n.isRead = true);
-          this.unreadCount = 0;
-        }
-      });
+      .subscribe();
   }
 }

@@ -1,14 +1,12 @@
-import { Component, inject, OnInit, OnDestroy, signal } from "@angular/core";
-import { Router, RouterLink } from "@angular/router";
-import { CommonModule } from "@angular/common";
-import { Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
-import { WishlistStateService } from "../../../core/services/WishList/components/wishlist-state.service";
-import { NotificationsService, Notification } from "../../../core/services/notifications/notifications.service";
-import { NavigationEnd } from "@angular/router";
-import { filter } from "rxjs";
-import { ThemeService } from "../../../core/services/Theme/theme.service";
-import { ProfileService } from "../../../core/services/Profile/profile.service";
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { Router, RouterLink, NavigationEnd } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Subject } from 'rxjs';
+import { takeUntil, filter } from 'rxjs/operators';
+import { WishlistStateService } from '../../../core/services/WishList/components/wishlist-state.service';
+import { NotificationsService, Notification } from '../../../core/services/notifications/notifications.service';
+import { ThemeService } from '../../../core/services/Theme/theme.service';
+import { ProfileService } from '../../../core/services/Profile/profile.service';
 
 @Component({
   selector: 'app-navbar-student',
@@ -18,23 +16,61 @@ import { ProfileService } from "../../../core/services/Profile/profile.service";
   styleUrl: './navbar-student.component.css'
 })
 export class NavbarStudentComponent implements OnInit, OnDestroy {
-  wishlistState    = inject(WishlistStateService);
-  private notifSvc = inject(NotificationsService);
-  private router   = inject(Router);
-  themeService     = inject(ThemeService);
-  profileService   = inject(ProfileService);
+  wishlistState                = inject(WishlistStateService);
+  private notificationsService = inject(NotificationsService);
+  private router               = inject(Router);
+  themeService                 = inject(ThemeService);
+  profileService               = inject(ProfileService);
 
   user = this.profileService.currentUser;
 
   isMenuOpen     = signal<boolean>(false);
   isNotifOpen    = signal<boolean>(false);
-  notifications: Notification[] = [];
-  unreadCount    = 0;
   isNotifLoading = false;
+  notifications: Notification[] = [];
+  unreadCount = 0;
 
   private destroy$ = new Subject<void>();
-
   private readonly baseUrl = 'https://guidy-api-v03-f8dngzewf7ebehea.austriaeast-01.azurewebsites.net';
+
+  ngOnInit(): void {
+    this.wishlistState.load();
+
+    if (!this.user()) {
+      this.profileService.getProfile().subscribe();
+    }
+
+    this.notificationsService.notifications
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(n => this.notifications = n);
+
+    this.notificationsService.unreadCount
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(c => this.unreadCount = c);
+
+    this.notificationsService.isLoading
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(l => this.isNotifLoading = l);
+
+    this.notificationsService.getNotifications()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe();
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      if (this.notificationsService.needsRefresh) {
+        this.notificationsService.getNotifications()
+          .pipe(takeUntil(this.destroy$))
+          .subscribe();
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   getAvatarUrl(url: string | null | undefined): string {
     if (!url) return 'images/Person.png';
@@ -62,65 +98,21 @@ export class NavbarStudentComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit(): void {
-    this.wishlistState.load();
-    this.loadNotifications();
-    if (!this.user()) {
-      this.profileService.getProfile().subscribe();
-    }
-  }
-
   toggleMenu()  { this.isMenuOpen.update(v => !v); }
   closeMenu()   { this.isMenuOpen.set(false); }
+  toggleNotif() { this.isNotifOpen.update(v => !v); }
+  closeNotif()  { this.isNotifOpen.set(false); }
 
-  toggleNotif() {
-    this.isNotifOpen.update(v => !v);
-    if (this.isNotifOpen()) this.loadNotifications();
-  }
-
-  closeNotif() { this.isNotifOpen.set(false); }
-
-  loadNotifications(): void {
-    this.isNotifLoading = true;
-    this.notifSvc.getNotifications()
+  markAsRead(notification: Notification): void {
+    if (notification.isRead) return;
+    this.notificationsService.markAsRead(notification.id)
       .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res) => {
-          this.notifications = res.notifications;
-          this.unreadCount   = res.unreadCount;
-          this.isNotifLoading = false;
-        },
-        error: (err) => {
-          this.isNotifLoading = false;
-        }
-      });
-  }
-
-  markAsRead(notif: Notification): void {
-    if (notif.isRead) return;
-    this.notifSvc.markAsRead(notif.id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          notif.isRead = true;
-          this.unreadCount = Math.max(0, this.unreadCount - 1);
-        }
-      });
+      .subscribe();
   }
 
   markAllAsRead(): void {
-    this.notifSvc.markAllAsRead()
+    this.notificationsService.markAllAsRead()
       .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: () => {
-          this.notifications.forEach(n => n.isRead = true);
-          this.unreadCount = 0;
-        }
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+      .subscribe();
   }
 }

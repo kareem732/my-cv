@@ -3,17 +3,19 @@ import { Router } from '@angular/router';
 import { AuthHelperService } from '../AuthHelper/auth-helper.service';
 import { AUTHENTICATIONService } from '../../../core/services/AUTHENTICATION/authentication.service';
 import { ProfileService } from '../../../core/services/Profile/profile.service';
+import { NotificationsService } from '../../../core/services/notifications/notifications.service';
 import { signal } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class LogoutService {
-  private readonly _authService = inject(AUTHENTICATIONService);
-  private readonly _authHelper = inject(AuthHelperService);
-  private readonly _profileService = inject(ProfileService);
-  private readonly _router = inject(Router);
+  private readonly authService          = inject(AUTHENTICATIONService);
+  private readonly authHelper           = inject(AuthHelperService);
+  private readonly profileService       = inject(ProfileService);
+  private readonly notificationsService = inject(NotificationsService);
+  private readonly router               = inject(Router);
 
   isLogoutPopupOpen = signal<boolean>(false);
-  isLogoutLoading = signal<boolean>(false);
+  isLogoutLoading   = signal<boolean>(false);
 
   openLogoutPopup() {
     this.isLogoutPopupOpen.set(true);
@@ -26,17 +28,20 @@ export class LogoutService {
 
   confirmLogout() {
     this.isLogoutLoading.set(true);
-    const refreshToken = this._authHelper.getRefreshToken() ?? '';
-
+    const refreshToken = this.authHelper.getRefreshToken() ?? '';
     const theme = sessionStorage.getItem('theme');
 
-    this._authService.logout(refreshToken).subscribe({
+    this.authService.logout(refreshToken).subscribe({
       next: () => {
-        this._authHelper.clearStorage();
+        this.authHelper.clearStorage();
         if (theme) sessionStorage.setItem('theme', theme);
-        this._profileService.currentUser.set(null);
+
+        this.profileService.currentUser.set(null);
+
+        this.notificationsService.clearCache();
+
         this.closeLogoutPopup();
-        this._router.navigate(['/auth/login']);
+        this.router.navigate(['/auth/login']);
       },
       error: (err) => {
         console.error('Logout failed:', err);

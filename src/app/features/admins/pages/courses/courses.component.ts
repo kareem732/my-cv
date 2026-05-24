@@ -93,6 +93,8 @@ export class CoursesComponent implements OnInit {
 
     this.adminService.getCourses(params).subscribe({
       next: (data) => {
+        console.log(data);
+        
         this.courses.set(data);
         this.isLoading.set(false);
       },
