@@ -1,14 +1,23 @@
-<div class="flex flex-col lg:flex-row min-h-screen bg-white font-sans">
+<div class="flex flex-col lg:flex-row min-h-screen bg-white dark:bg-gray-900 font-sans">
 
   <div class="w-full lg:w-1/2 flex flex-col p-6 md:p-12 lg:p-20 relative">
 
     <div class="logo mb-8">
-      <a routerLink="/" class="inline-block">
-        <img
-          src="images/500205945d3631c63ffe0ceb730308f60740894b.png"
-          class="h-[100px] md:h-[130px] w-auto object-contain transition-transform duration-300 hover:scale-105"
-          alt="Logo"
-        />
+      <a routerLink="/about-us" class="flex items-center h-[80px] cursor-pointer gap-2">
+        <svg width="52" height="52" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="70,8 118,35 118,90 70,117 22,90 22,35" fill="#4A3ADF"/>
+          <polygon points="70,18 108,41 108,84 70,107 32,84 32,41" fill="none" stroke="white" stroke-width="1.5" opacity="0.2"/>
+          <rect x="48" y="38" width="9" height="64" rx="4" fill="white"/>
+          <line x1="57" y1="70" x2="88" y2="39" stroke="white" stroke-width="9" stroke-linecap="round"/>
+          <line x1="57" y1="70" x2="88" y2="101" stroke="white" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="112" cy="35" r="12" fill="#F97316"/>
+          <circle cx="112" cy="35" r="6" fill="white" opacity=".4"/>
+        </svg>
+        <div class="flex flex-col leading-none">
+          <span style="font-family:system-ui,sans-serif; font-size:22px; font-weight:800; color:#4A3ADF; letter-spacing:-0.5px;">
+            Kno<span style="color:#F97316;">via</span>
+          </span>
+        </div>
       </a>
     </div>
 
@@ -16,14 +25,14 @@
       <div class="max-w-md w-full">
 
         <div class="mb-10 text-start">
-          <h2 class="text-4xl font-bold text-gray-900 mb-6">Verify Email</h2>
-          <p class="text-gray-500 text-lg">
-            Don’t worry, happens to all of us. Enter the code sent to your email to recover your account.
+          <h2 class="text-4xl font-bold text-gray-900 dark:text-white mb-6">Verify Email</h2>
+          <p class="text-gray-500 dark:text-gray-400 text-lg">
+            Don't worry, happens to all of us. Enter the code sent to your email to recover your account.
           </p>
         </div>
 
         @if (errMsg()) {
-          <div class="p-4 mb-6 text-sm text-red-800 rounded-2xl bg-red-50 border border-red-100 animate-fade-in">
+          <div class="p-4 mb-6 text-sm text-red-800 dark:text-red-400 rounded-2xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 animate-fade-in">
             {{ errMsg() }}
           </div>
         }
@@ -31,21 +40,21 @@
         <form [formGroup]="verifyForm" (ngSubmit)="handleVerify()" class="space-y-10">
 
           <div class="relative">
-  <input
-    type="email"
-    formControlName="email"
-    id="email"
-    placeholder=" "
-    readonly
-    class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-gray-50 rounded-xl border-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-[#4A3ADF] peer cursor-not-allowed"
-  />
-  <label
-    for="email"
-    class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-[#4A3ADF] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-3"
-  >
-    Email Address
-  </label>
-</div>
+            <input
+              type="email"
+              formControlName="email"
+              id="email"
+              placeholder=" "
+              readonly
+              class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800 rounded-xl border-2 border-gray-300 dark:border-gray-600 appearance-none focus:outline-none focus:ring-0 focus:border-[#4A3ADF] dark:focus:border-[#4A3ADF] peer cursor-not-allowed"
+            />
+            <label
+              for="email"
+              class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-[#4A3ADF] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-3"
+            >
+              Email Address
+            </label>
+          </div>
 
           <div class="relative">
             <input
@@ -53,12 +62,12 @@
               formControlName="code"
               id="code"
               maxlength="6"
-              class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-xl border-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-[#4A3ADF] peer font-bold tracking-[0.5em]"
+              class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 dark:text-white bg-transparent dark:bg-gray-800 rounded-xl border-2 border-gray-300 dark:border-gray-600 appearance-none focus:outline-none focus:ring-0 focus:border-[#4A3ADF] dark:focus:border-[#4A3ADF] peer font-bold tracking-[0.5em]"
               placeholder=" "
             />
             <label
               for="code"
-              class="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-[#4A3ADF] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-3"
+              class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-800 px-2 peer-focus:px-2 peer-focus:text-[#4A3ADF] peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-3"
             >
               Verification Code
             </label>
@@ -70,7 +79,7 @@
           <button
             type="submit"
             [disabled]="verifyForm.invalid || loader()"
-            class="w-full text-white bg-[#0C21C1] hover:bg-[#392cb3] disabled:bg-gray-400 font-medium rounded-full text-lg px-5 py-4 text-center transition-all duration-300 active:scale-95 shadow-lg shadow-indigo-200">
+            class="w-full text-white bg-[#0C21C1] hover:bg-[#392cb3] disabled:bg-gray-400 dark:disabled:bg-gray-600 disabled:cursor-not-allowed font-medium rounded-full text-lg px-5 py-4 text-center transition-all duration-300 active:scale-95 shadow-lg shadow-indigo-200 dark:shadow-indigo-900/30">
 
             @if (loader()) {
               <div class="flex items-center justify-center">
@@ -88,7 +97,7 @@
 
   <div class="hidden lg:block lg:w-1/2 relative p-6">
     <div class="w-full h-full relative overflow-hidden rounded-[40px]">
-      <img src="images/bb36d616a30a7891c17abc43dd9b9bb3946b2227.jpg" alt="Login Background" class="absolute inset-0 w-full h-full object-cover">
+      <img src="images/55.png" alt="Login Background" class="absolute inset-0 w-full h-full object-cover">
     </div>
   </div>
 
